@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UEFI Kit Lab — запись на флешку и описание</title>
+<style>
+  :root {
+    --bg: #f4f6fa;
+    --card: #ffffff;
+    --border: #d9dee8;
+    --accent: #0a58ca;
+    --accent2: #0d6efd;
+    --text: #1c2330;
+    --muted: #5a6474;
+    --code-bg: #eef1f7;
+    --warn-bg: #fff4e5;
+    --warn-border: #ffc166;
+    --ok: #157347;
+    --step: #0a58ca;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 24px 20px 60px; }
+  header {
+    background: linear-gradient(135deg, var(--accent), #00337a);
+    color: #fff;
+    border-radius: 12px;
+    padding: 28px 28px 22px;
+    margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 26px; }
+  header p { margin: 0; opacity: .92; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.35);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(16,24,40,.06);
+  }
+  h2 {
+    font-size: 20px;
+    margin: 0 0 12px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 8px;
+  }
+  h3 { font-size: 16px; margin: 18px 0 8px; }
+  ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 0; }
+  ol.steps > li {
+    counter-increment: s;
+    position: relative;
+    padding: 12px 16px 12px 56px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  ol.steps > li::before {
+    content: counter(s);
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--step);
+    color: #fff;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .warn {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 12px 0;
+  }
+  code {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1px 7px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+  }
+  .file { font-family: Consolas, "Courier New", monospace; color: var(--accent2); font-weight: 600; }
+  ul.features { list-style: none; padding: 0; margin: 0; }
+  ul.features > li {
+    padding: 10px 12px 10px 38px;
+    position: relative;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  ul.features > li::before {
+    content: "✓";
+    position: absolute;
+    left: 13px; top: 10px;
+    color: var(--ok);
+    font-weight: 700;
+  }
+  .sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+  .rev {
+    background: linear-gradient(135deg, var(--accent2), #0a58ca);
+    color: #fff;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  table { border-collapse: collapse; width: 100%; margin-top: 6px; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; font-size: 14px; }
+  th { background: var(--code-bg); }
+  td .file { font-weight: 600; }
+  footer { color: var(--muted); font-size: 13px; text-align: center; margin-top: 24px; }
+  a { color: var(--accent2); }
+  .lang {
+    display: inline-block;
+    background: var(--accent2);
+    color: #fff;
+    border-radius: 6px;
+    padding: 2px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 0 0 10px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>UEFI Kit Lab<span class="badge">v2.82 &middot; X64 &middot; UEFI</span></h1>
+  <span class="lang">RU</span>
+  <p>Универсальный диагностический комплекс для UEFI-платформ — работает напрямую из загрузочной флешки, без установки и ОС.</p>  <p class="sub" style="margin-top:10px;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.92)">
+    <strong>Анализ памяти:</strong> чтение SPD всех планок (DDR3/DDR4/DDR5) по SMBus
+    с автоопределением типа, производителя, объёма и частоты; полный физический тест ОЗУ
+    с выявлением нестабильных ячеек.<br>
+    <strong>Диагностика на уровне ячеек:</strong> 25 тестов (функциональные, деградационные,
+    Rowhammer/TRR, термические), восстановление карты банков/строк/рангов/каналов прямо на железе
+    (методика DRAMA), декод физического адреса в канал/планку/ранг/банк в реальном времени,
+    анализ залипших битов, карта ошибок по микросхемам, экспорт BadRAM.<br>
+    <strong>Сохранение дампа SPD вставленной в плату памяти:</strong> каждая планка выгружается
+    отдельным файлом .bin — SPD любой памяти (DIMM/SO-DIMM) можно сохранить и открыть
+    в Thaiphoon Burner, HWiNFO или hex-просмотрщике.<br>
+    <strong>Полный контроль BIOS:</strong> дамп и восстановление микросхемы SPI BIOS
+    с разблокировкой защиты записи, а также дамп видеокарты (vBIOS / Option ROM).<br>
+    <strong>Мониторинг платформы:</strong> живой профиль XMP/EXPO, применённые тайминги IMC
+    (Intel MCHBAR / AMD Zen SMN), счётчики повторов IMC, мощность RAPL, температура,
+    MCA/ECC и перезапуски. Сводка последнего прогона хранится в NVRAM и показывается
+    при следующем старте (ошибки/температура/пропускная способность относительно прошлого раза).<br>
+    <strong>Для сервиса и энтузиастов:</strong> диагностика неисправных модулей, резервное копирование
+    прошивок перед модификацией, анализ совместимости памяти на конкретной плате — всё в одном месте,
+    с понятным меню и подробными отчётами на самой флешке.
+  </p>
+  <span class="lang">EN</span>
+  <p>Universal diagnostic suite for UEFI platforms — runs directly from a bootable USB stick, no installation, no OS.</p>
+  <p class="sub" style="margin-top:10px;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.92)">
+    <strong>Memory analysis:</strong> reads SPD of all installed modules (DDR3/DDR4/DDR5) over SMBus
+    with automatic type, vendor, size and speed detection; full physical RAM test
+    that uncovers unstable cells.<br>
+    <strong>Cell-level diagnostics:</strong> 25 tests (functional, degradation, Rowhammer/TRR, thermal),
+    on-board recovery of the bank/row/rank/channel address map (DRAMA method), real-time decoding of
+    physical addresses into channel/DIMM/rank/bank, stuck-bit analysis, per-chip error maps, BadRAM export.<br>
+    <strong>SPD dump of installed memory:</strong> each module is exported as a separate .bin file —
+    the SPD of any memory (DIMM/SO-DIMM) can be saved and opened in Thaiphoon Burner, HWiNFO or a hex viewer.<br>
+    <strong>Full BIOS control:</strong> dump and restore of the SPI BIOS chip
+    with write-protection unlock, plus GPU vBIOS (Option ROM) dump.<br>
+    <strong>Platform monitoring:</strong> live XMP/EXPO profile, applied IMC timings
+    (Intel MCHBAR / AMD Zen SMN), IMC retry counters, RAPL power, temperature,
+    MCA/ECC and restarts. A summary of the last run is stored in NVRAM and shown
+    on the next start (errors/temperature/bandwidth relative to the previous run).<br>
+    <strong>For service and enthusiasts:</strong> faulty module diagnostics, firmware backup
+    before modification, memory compatibility analysis on a specific board — all in one place,
+    with a clear menu and detailed reports on the stick itself.
+  </p>
+</header>
+
+<div class="card">
+  <h2>Как записать дистрибутив на флешку</h2>
+  <span class="lang">RU</span>
+  <ol class="steps">
+    <li>
+      Скачай и запусти <strong>Rufus</strong> — <a href="https://rufus.ie">https://rufus.ie</a>.
+      <div class="sub">Программа бесплатная, портативная, установки не требует.</div>
+    </li>
+    <li>
+      Вставь флешку (минимум 8 МБ, лучше 256 МБ и больше — подойдёт любая).
+      <div class="sub">Внимание: всё содержимое флешки будет стёрто!</div>
+    </li>
+    <li>
+      В Rufus выбери образ <span class="file">uefi-kit-lab.iso</span> из папки <span class="file">dist</span>.
+      <div class="sub">Кнопка «ВЫБРАТЬ» справа от поля «Загрузочный носитель». Записывать нужно именно ISO, а не <span class="file">efiboot.img</span> или <span class="file">BOOTX64.EFI</span>.</div>
+    </li>
+    <li>
+      Оставь настройки по умолчанию: <strong>«ISO image»</strong>, схема разметки <strong>GPT</strong>, целевая система <strong>UEFI (не CSM)</strong>.
+      <div class="sub">Rufus сам подхватит эти параметры из образа, обычно менять ничего не нужно.</div>
+    </li>
+    <li>
+      Нажми <strong>«СТАРТ»</strong> и подтверди предупреждения.
+      <div class="sub">После окончания записи Rufus покажет «Готово».</div>
+    </li>
+    <li>
+      Извлеки флешку, вставь её в целевую машину и загрузись с неё в режиме <strong>UEFI</strong> (Boot Menu: F12 / F9 / F11 / F8 — зависит от вендора).
+    </li>
+  </ol>
+  <div class="warn">
+    <strong>Внимание!</strong> Функции «Restore SPI BIOS» и «Unlock» перезаписывают микросхему BIOS целевой платы.
+    Бракованный или неполный дамп при восстановлении может повредить систему — работай только с заведомо рабочим образом,
+    снятым на этой же плате.
+  </div>
+  <span class="lang">EN</span>
+  <h3 style="margin-top:14px">English — writing the distribution to a USB stick</h3>
+  <ol class="steps" style="counter-reset: s;">
+    <li>
+      Download and run <strong>Rufus</strong> — <a href="https://rufus.ie">https://rufus.ie</a>.
+      <div class="sub">Free, portable, no installation required.</div>
+    </li>
+    <li>
+      Insert the USB stick (8 MB minimum, 256 MB or more recommended — any stick will do).
+      <div class="sub">Warning: all data on the stick will be erased!</div>
+    </li>
+    <li>
+      In Rufus select the image <span class="file">uefi-kit-lab.iso</span> from the <span class="file">dist</span> folder.
+      <div class="sub">Use the "SELECT" button next to "Boot selection". Write the ISO itself, not <span class="file">efiboot.img</span> or <span class="file">BOOTX64.EFI</span>.</div>
+    </li>
+    <li>
+      Keep the defaults: <strong>"ISO image"</strong>, partition scheme <strong>GPT</strong>, target system <strong>UEFI (non CSM)</strong>.
+      <div class="sub">Rufus picks these up from the image automatically; normally nothing needs changing.</div>
+    </li>
+    <li>
+      Press <strong>"START"</strong> and confirm the warnings.
+      <div class="sub">Rufus reports "Ready" when the write completes.</div>
+    </li>
+    <li>
+      Eject the stick, insert it into the target machine and boot from it in <strong>UEFI</strong> mode (Boot Menu: F12 / F9 / F11 / F8 — vendor dependent).
+    </li>
+  </ol>
+  <div class="warn">
+    <strong>Warning!</strong> The "Restore SPI BIOS" and "Unlock" functions overwrite the target board's BIOS chip.
+    A bad or incomplete dump used for restore can brick the system — only work with a known-good image
+    taken from that same board.
+  </div>
+</div>
+
+<div class="card">
+  <h2>Что умеет программа</h2>
+  <span class="lang">RU</span>
+
+  <div class="rev">Текущая ревизия: <strong>v2.82</strong></div>
+
+  <ul class="features">
+    <li>
+      <strong>&lt;1&gt; Test Memory</strong> — тест физической оперативной памяти.
+      <div class="sub">25 тестов (см. раздел ниже): функциональные 1–13 (включая March-C-, Rowhammer, Bit-Fade), термические/нагрузочные 14–20 (AVX2, VRM, пропускная способность), специализированные 21–24 (TRR-safe Rowhammer, retention sweep, CFst, March SS). Интерактивный экран теста, выбор набора (все / один), конфигурация (количество проходов, SMP, остановка по ошибке, обход кэша, диапазон адресов, режим Marathon), подсветка ошибок, F1 — дамп экрана в файл.</div>
+    </li>
+    <li>
+      <strong>&lt;2&gt; Dump SPD</strong> — чтение SPD всех планок памяти.
+      <div class="sub">SPD DDR3 (256 байт), DDR4 (512 байт) и DDR5 (1024 байта) читаются напрямую через SMBus, по адресам 0x50–0x57. Автоопределение типа памяти по байту 0x12. Плюс человекочитаемый отчёт из SMBIOS Type 17: производитель, part number, серийный номер, объём, частота. Файлы именуются автоматически: <span class="file">&lt;производитель&gt;_DDR4_&lt;тип&gt;_&lt;объём&gt;GB_&lt;скорость&gt;_&lt;part&gt;.bin</span>. Проверка контрольной суммы SPD (CRC-16 для DDR4/DDR5), отбраковка недописанного EEPROM, декод чипов DDR3 по сырому дампу.</div>
+    </li>
+    <li>
+      <strong>&lt;3&gt; Dump SPI BIOS</strong> — дамп микросхемы BIOS флешки на загрузочный USB.
+      <div class="sub">Чтение через контроллер SPI: Intel PCH (HWSEQ/MMIO), AMD FCH (FIFO) и AMD SPI100 (Zen+). Автоопределение метода доступа и размера флешки, прогресс 0–100%, имя файла формируется из информации о плате.</div>
+    </li>
+    <li>
+      <strong>&lt;4&gt; Restore SPI BIOS</strong> — разблокировка и восстановление BIOS из дампа.
+      <div class="sub">Выбор файла-дампа прямо с флешки, попытка снятия аппаратной блокировки записи (Intel FLOCKDN / AMD protection registers), секторное стирание и запись, детальный лог <span class="file">spi_restore_log.txt</span>.</div>
+    </li>
+    <li>
+      <strong>&lt;5&gt; Dump GPU vBIOS</strong> — дамп опцион-рома видеокарты на USB.
+      <div class="sub">Поиск видеокарт через перечисление шины PCI (EFI_PCI_IO_PROTOCOL с фолбэком на MCFG), чтение Option ROM, имя файла по VID/DID — например <span class="file">vbios_B1_D0_10DE_0F00.bin</span>.</div>
+    </li>
+    <li>
+      <strong>&lt;6&gt; Exit</strong> — выход в UEFI shell.
+    </li>
+  </ul>
+
+  <span class="lang">EN</span>
+  <h3>English — Что умеет программа / features</h3>
+  <ul class="features">
+    <li>
+      <strong>&lt;1&gt; Test Memory</strong> — physical RAM testing.
+      <div class="sub">25 tests (see the section below): functional 1-13 (including March-C-, Rowhammer, Bit-Fade), thermal/load 14-20 (AVX2, VRM, bandwidth), specialized 21-24 (TRR-safe Rowhammer, retention sweep, CFst, March SS). Interactive test screen, run set selection (all / single), configuration (pass count, SMP, stop-on-error, cache bypass, address range, Marathon mode), error highlighting, F1 — screen dump to file.</div>
+    </li>
+    <li>
+      <strong>&lt;2&gt; Dump SPD</strong> — read the SPD of all memory modules.
+      <div class="sub">DDR3 (256 bytes), DDR4 (512 bytes) and DDR5 (1024 bytes) SPD is read directly over SMBus at addresses 0x50-0x57. Automatic memory type detection via byte 0x12. Plus a human-readable report from SMBIOS Type 17: vendor, part number, serial number, size, speed. Files are named automatically: <span class="file">&lt;vendor&gt;_DDR4_&lt;type&gt;_&lt;size&gt;GB_&lt;speed&gt;_&lt;part&gt;.bin</span>. SPD checksum verification (CRC-16 for DDR4/DDR5), rejection of half-written EEPROMs, DDR3 chip decoding from the raw dump.</div>
+    </li>
+    <li>
+      <strong>&lt;3&gt; Dump SPI BIOS</strong> — dump the BIOS flash chip to the boot USB.
+      <div class="sub">Reads via the SPI controller: Intel PCH (HWSEQ/MMIO), AMD FCH (FIFO) and AMD SPI100 (Zen+). Automatic access-method and flash-size detection, 0-100% progress, file name built from board information.</div>
+    </li>
+    <li>
+      <strong>&lt;4&gt; Restore SPI BIOS</strong> — unlock and restore the BIOS from a dump.
+      <div class="sub">Dump file selection right on the stick, attempt to remove hardware write protection (Intel FLOCKDN / AMD protection registers), sector erase and write, detailed log <span class="file">spi_restore_log.txt</span>.</div>
+    </li>
+    <li>
+      <strong>&lt;5&gt; Dump GPU vBIOS</strong> — dump the GPU option ROM to USB.
+      <div class="sub">Video cards are found by PCI bus enumeration (EFI_PCI_IO_PROTOCOL with an MCFG fallback), the Option ROM is read, the file name uses VID/DID — e.g. <span class="file">vbios_B1_D0_10DE_0F00.bin</span>.</div>
+    </li>
+    <li>
+      <strong>&lt;6&gt; Exit</strong> — return to the UEFI shell.
+    </li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Что нового — изменения по версиям</h2>
+  <span class="lang">RU</span>
+
+  <h3>v2.82 — корректное досрочное завершение тестов</h3>
+  <div class="sub">Устранены фантомные ошибки BlockMove при остановке прогона: verify-проход теперь пропускается при досрочном завершении, а память не освобождается, пока живы worker'ы. Одиночный Test 7 — чист.</div>
+
+  <h3>v2.81 — честный отчёт и понятный BW-вердикт</h3>
+  <div class="sub">result_report.html показывает реальную версию программы. Вердикт BW drop поясняет «drop below per-test noise floor», когда большой процент — естественный разброс теста.</div>
+
+  <h3>v2.80 — BW drop без ложных тревог</h3>
+  <div class="sub">Устранён ложный вердикт «severe» после Bit-Fade: idle-фазы больше не пишутся в BW-статистику, каждая фаза учитывается от своего нуля. Точность rate повышена (децисекунды).</div>
+
+  <h3>v2.79 — Test Memory — первый пункт меню</h3>
+  <div class="sub">Главное меню: <strong>&lt;1&gt; Test Memory</strong>, <strong>&lt;2&gt; Dump SPD</strong> — тест памяти стал основным пунктом.</div>
+
+  <h3>v2.78 — плавный секундомер и экран во всех тестах</h3>
+  <div class="sub">Секундомер и отображение хода теста больше не «подмерзают» на 1-7 секунд: все ядра тестов отдают heartbeat дисплею каждые ~200 мс (аналог do_tick в memtest86+).</div>
+
+  <h3>v2.77 — скорость памяти как в MemTest86</h3>
+  <div class="sub">Полоса пропускания считается с учётом чтения+записи (сравнимо с референсным MemTest86) и выводится в строке Memory на экране теста.</div>
+
+  <h3>v2.76 — никаких фантомов при завершении SMP-тестов</h3>
+  <div class="sub">Все ядра тестов опрашивают флаг досрочного завершения между фазами — «зависшие» worker'ы корректно выходят, ложные записи в чужую память исключены. Дренаж worker'ов — до 10 с с живым экраном.</div>
+
+  <h3>v2.75 — Test 0 и экран результатов</h3>
+  <div class="sub">Test 0: честный счётчик прогресса (доходит до 128/128), футер с подсказками клавиш, заголовок без переноса на вторую строку.</div>
+
+  <h3>v2.74 — пакет исправлений по независимому аудиту</h3>
+  <div class="sub">Test 23 (CFst) и Test 24 (March SS) корректно запускаются из меню; Dump BIOS больше не снимает защиту записи; корректное завершение Sequential SMP без порчи памяти; тесты 21-24 видны в таблице результатов; честные вердикты автоизоляции; SPD-геометрия не перезаписывается справочником.</div>
+
+  <span class="lang">EN</span>
+  <h3>English — What's new by version</h3>
+
+  <h3>v2.82 — correct early test termination</h3>
+  <div class="sub">Phantom BlockMove errors on run interruption are gone: the verify pass is now skipped on early termination and memory is not freed while workers are alive. Standalone Test 7 runs clean.</div>
+
+  <h3>v2.81 — honest report and clear BW verdict</h3>
+  <div class="sub">result_report.html shows the real program version. The BW drop verdict explains "drop below per-test noise floor" when a large percentage is just natural test variance.</div>
+
+  <h3>v2.80 — BW drop without false alarms</h3>
+  <div class="sub">The false "severe" verdict after Bit-Fade is fixed: idle phases are no longer written into BW statistics, each phase is accounted from its own zero. Rate precision improved (deci-seconds).</div>
+
+  <h3>v2.79 — Test Memory is the first menu item</h3>
+  <div class="sub">Main menu: <strong>&lt;1&gt; Test Memory</strong>, <strong>&lt;2&gt; Dump SPD</strong> — memory testing became the primary entry.</div>
+
+  <h3>v2.78 — smooth stopwatch and display in all tests</h3>
+  <div class="sub">The stopwatch and progress display no longer freeze for 1-7 seconds: every test kernel sends a heartbeat to the display every ~200 ms (the do_tick pattern from memtest86+).</div>
+
+  <h3>v2.77 — memory speed like MemTest86</h3>
+  <div class="sub">Bandwidth is counted with read+write traffic (comparable to the reference MemTest86) and shown in the Memory row of the test screen.</div>
+
+  <h3>v2.76 — no phantoms on SMP test completion</h3>
+  <div class="sub">All test kernels poll the early-exit flag between phases — stuck workers exit cleanly, false writes into foreign memory are excluded. Worker drain runs up to 10 s with a live screen.</div>
+
+  <h3>v2.75 — Test 0 and the results screen</h3>
+  <div class="sub">Test 0: honest progress counter (reaches 128/128), footer with key hints, title without wrapping to a second line.</div>
+
+  <h3>v2.74 — fixes from an independent audit</h3>
+  <div class="sub">Test 23 (CFst) and Test 24 (March SS) launch correctly from the menu; Dump BIOS no longer removes write protection; Sequential SMP terminates without memory corruption; tests 21-24 are visible in the results table; honest auto-isolation verdicts; SPD geometry is no longer overwritten by the reference table.</div>
+</div>
+
+<div class="card">
+  <h2>Тесты памяти — что именно делает каждый</h2>
+  <span class="lang">RU</span>
+  <p style="margin:0 0 10px">Меню «Test Memory» предлагает 25 тестов + «Run All Tests». Тесты 0–13 соответствуют нумерации MemTest86+ (T0–T11 и далее), 14–24 добавлены нами. Номера — это номера пунктов в меню выбора теста, а не внутренние ID.</p>
+
+  <h3>Test 0 — SPD / SMBus Integrity [read EEPROM]</h3>
+  <div class="sub">Проверка самих SPD-EEPROM по шине SMBus: контрольные суммы JEDEC + 128 полных пере-чтений каждого занятого EEPROM и сравнение образов. Ловит нестабильный SMBus / плохой контакт / сбоящую микросхему SPD. Одноразовый (не входит в Run All).</div>
+
+  <h3>Test 1 — Address Walk Ones [no cache]</h3>
+  <div class="sub">Записывает «шагающую единицу» на каждую линию адреса, принудительный сброс кэша WBINVD между проходами (каждое чтение идёт в DRAM). Ловит дефекты декодера адреса: слипшиеся/оборванные линии адреса, неправильные переходы между строками. Аналог MemTest86+ T0.</div>
+
+  <h3>Test 2 — Address-as-Data [own address]</h3>
+  <div class="sub">Записывает в каждую ячейку её собственный адрес (и инверсии), затем проверяет. Находит ошибки декодера: две ячейки, отображающиеся на один физический адрес, или ячейки, которые не пишутся вовсе. Аналог MemTest86+ T1/T2.</div>
+
+  <h3>Test 3 — Bus stress [turnaround]</h3>
+  <div class="sub">Интенсивные переходы чтение→запись→чтение с переключением всех битов данных в каждом слове. Нагружает шину данных и тайминги поворота (turnaround), ловит нестабильность шины и слабые сигналы данных. Аналог MemTest86+ T3.</div>
+
+  <h3>Test 4 — Moving Inversions [1s &amp; 0s + random]</h3>
+  <div class="sub">Классические «плавающие инверсии»: заполнение паттерном 1s/0s с последующей инверсией побитно + случайные паттерны. Проверяет каждую ячейку на переход 0→1 и 1→0 и на соседские влияния. Аналог MemTest86+ T4/T5.</div>
+
+  <h3>Test 5 — Moving Inversions 8-bit [pattern]</h3>
+  <div class="sub">Шагающие единицы и нули в 8-битном представлении: паттерн вращается по каждому байту и проходится по всем 256 комбинациям (8 бит). Ловит отказы, зависящие от соседних битов в одном байте. Аналог MemTest86+ T6.</div>
+
+  <h3>Test 6 — Modulo-20 [anti-cache]</h3>
+  <div class="sub">Паттерн с шагом 20 адресов, специально подобран так, чтобы его нельзя было «замаскировать» кэшем (обход кэш-ассоциативности). Пишет и проверяет с этого шага. Аналог MemTest86+ T7.</div>
+
+  <h3>Test 7 — Block move [64 moves]</h3>
+  <div class="sub">Блочное перемещение 64 блоков памяти друг в друга и обратно. Нагружает шину памяти массовыми копированиями, ловит ошибки при интенсивной многоканальной работе и сбои строк/столбцов под нагрузкой. Аналог MemTest86+ T8. Верификация корректно прерывается при остановке теста — фантомные ошибки исключены (v2.82).</div>
+
+  <h3>Test 8 — Moving Inversions 32/64 [shift]</h3>
+  <div class="sub">Паттерн, который сдвигается на 1 бит для каждого адреса, с 64 различными смещениями. Покрывает все комбинации битовых сдвигов в 32/64-битных словах. Аналог MemTest86+ T9.</div>
+
+  <h3>Test 9 — Bit-Fade / retention [direct]</h3>
+  <div class="sub">Заполняет всю память паттерном, ждёт 30 секунд (пауза удержания) и перечитывает. Находит ячейки, теряющие заряд — деградационные (retention) отказы, которые другие тесты не видят, т.к. те проверяют сразу после записи. Аналог MemTest86+ T10.</div>
+
+  <h3>Test 10 — Rowhammer [Blacksmith-style]</h3>
+  <div class="sub">Упрощённый Blacksmith-подход: интенсивно «бьёт» (hammer) строки-агрессоры, затем проверяет соседние строки-жертвы. Ловит утечку заряда между физически соседними строками при частой активации — классический Rowhammer-отказ. Аналог MemTest86+ v7 Test 11.</div>
+
+  <h3>Test 11 — March-C- multi-pattern [direct]</h3>
+  <div class="sub">6-фазный маршевый тест March-C- с тремя паттернами на физической памяти (без вмешательства кэша). Покрывает залипшие биты, переходные отказы, coupling-отказы между соседними ячейками. Один из самых сильных функциональных тестов.</div>
+
+  <h3>Test 12 — Checkerboard / Adjacent-Cell [direct]</h3>
+  <div class="sub">Шахматное заполнение (чередующиеся 0/1) + фаза «бабочки» (flip соседних ячеек). Проверяет coupling-влияние соседних ячеек друг на друга и на шину данных.</div>
+
+  <h3>Test 13 — Walking Ones/Zeros [exhaustive]</h3>
+  <div class="sub">Полный исчерпывающий тест: единица «проходит» по каждому биту всех слов, затем инверсия. Очень медленный, но максимально полный по покрытию отдельных битов. Аналог MemTest86+ T13/Walking.</div>
+
+  <h3>Test 14 — Cache Evict Storm [CLFLUSH]</h3>
+  <div class="sub">Каждая строка кэша принудительно вытесняется командой CLFLUSH перед чтением — каждое чтение идёт физически в DRAM. Нагружает контроллер памяти и VRM большим потоком чтений без «маскировки» кэшем.</div>
+
+  <h3>Test 15 — VRM Square-Wave [AVX2]</h3>
+  <div class="sub">Переключение нагрузки на VRM прямоугольной волной: 10 Гц циклов «взрыв AVX2 FMA» ↔ «простой». Создаёт резкие скачки тока, ловит нестабильность питания памяти, просадки напряжения и связанные с ними сбои.</div>
+
+  <h3>Test 16 — L3 Stress [L3 resident]</h3>
+  <div class="sub">Read-modify-write в наборе размером ~1 МБ, умещающемся в L3. Замкнутый цикл по одним и тем же строкам — нагружает конкретные банки и строки повторно, ловит скрытые retention/coupling отказы в «горячих» строках.</div>
+
+  <h3>Test 17 — Thermal Soak [3 min, AVX2]</h3>
+  <div class="sub">3 минуты непрерывной AVX2 FMA-нагрузки + записей на всех ядрах. Разогревает память и IMC до максимальной мощности, ловит температурно-зависимые отказы (появляются только на горячей памяти). Сопровождается контролем температуры.</div>
+
+  <h3>Test 18 — BW Soak [5 min, AVX2]</h3>
+  <div class="sub">5 минут потоковой записи (non-temporal stores, vmovntdq — без загрязнения кэша) с последующей проверкой. Держит контроллер памяти на максимальной пропускной способности, ловит отказы под полной нагрузкой шины/каналов.</div>
+
+  <h3>Test 19 — Stride-sweep BW [probe]</h3>
+  <div class="sub">Замер пропускной способности чтения при шагах 64B / 1KB / 4KB / 64KB. Сканирует ассоциативность кэша и деления каналов/банков — диагностика производительности, а не только ошибок: показывает, попадает ли память в паспортные характеристики.</div>
+
+  <h3>Test 20 — Vector PRSG [AVX2]</h3>
+  <div class="sub">Псевдослучайный поток 4×64-бит (xorshift) на AVX2: заполнение + проверка вперёд/назад. Высокоэнтропийные паттерны покрывают межбитовые зависимости, которые «правильные» паттерны пропускают.</div>
+
+  <h3>Test 21 — Rowhammer [TRR-safe]</h3>
+  <div class="sub">TRRespass-стиль: 8 основных строк-агрессоров с простым шагом + ротация, для DDR5 двойные активации. Обходит защиту TRR (Target Row Refresh) — находит уязвимые строки, которые «обычный» Rowhammer 10 не видит из-за рефреша-защиты.</div>
+
+  <h3>Test 22 — Bit-Fade Sweep [retention]</h3>
+  <div class="sub">Градуированная деградационная развёртка: паузы 5/30/120 с (сплошная единица); при обнаружении утечки — эскалация до 5/15/30/60/120 с с двумя паттернами. Выдаёт вердикт CRITICAL/WARNING/OK по первому сбою и стабильным адресам.</div>
+
+  <h3>Test 23 — CFst [state coupling]</h3>
+  <div class="sub">Записывает состояние в строку-агрессор того же банка, затем читает строку-жертву без сброса. Находит coupling-отказы, где состояние агрессора влияет на чтение соседней строки (state-coupling fault).</div>
+
+  <h3>Test 24 — March SS [22-phase]</h3>
+  <div class="sub">22-фазный маршевый тест: полное покрытие state-coupling (CFst) + переходных отказов (TF). Самый полный маршевый алгоритм из используемых.</div>
+
+  <h3>Run All Tests</h3>
+  <div class="sub">Запускает функциональные тесты 1–13 дважды, затем термические/нагрузочные 14–20 четырежды (обозначение x2/x4 в прогрессе). Останавливается по ESC. Результаты сводятся в таблицу со скоростью прохождения, пропускной способностью и причиной пропуска (например, нет AVX2 / нет CLFLUSH / изолированный слот).</div>
+
+  <span class="lang">EN</span>
+  <h3>English — what each test does</h3>
+  <p style="margin:0 0 10px">The "Test Memory" menu offers 25 tests + "Run All Tests". Tests 0-13 follow the MemTest86+ numbering (T0-T11 and on), 14-24 are ours. The numbers are the single-test menu positions, not internal IDs.</p>
+
+  <h3>Test 0 — SPD / SMBus Integrity [read EEPROM]</h3>
+  <div class="sub">Checks the SPD EEPROMs themselves over SMBus: JEDEC checksums + 128 full re-reads of each populated EEPROM with image comparison. Catches an unstable SMBus / poor contact / a failing SPD chip. One-shot (not part of Run All).</div>
+
+  <h3>Test 1 — Address Walk Ones [no cache]</h3>
+  <div class="sub">Writes a walking one across every address line with a forced WBINVD cache drop between passes (every read goes to DRAM). Catches address-decoder defects: shorted/open address lines, wrong row transitions. Analogue of MemTest86+ T0.</div>
+
+  <h3>Test 2 — Address-as-Data [own address]</h3>
+  <div class="sub">Writes each cell's own address (and its inversions), then verifies. Finds decoder errors: two cells mapping to one physical address, or cells that cannot be written at all. Analogue of MemTest86+ T1/T2.</div>
+
+  <h3>Test 3 — Bus stress [turnaround]</h3>
+  <div class="sub">Intensive read→write→read transitions with all data bits toggled in every word. Stresses the data bus and turnaround timings; catches bus instability and weak data signals. Analogue of MemTest86+ T3.</div>
+
+  <h3>Test 4 — Moving Inversions [1s &amp; 0s + random]</h3>
+  <div class="sub">Classic moving inversions: fill with 1s/0s patterns followed by bit-by-bit inversion + random patterns. Checks every cell for 0→1 and 1→0 transitions and for neighbor influence. Analogue of MemTest86+ T4/T5.</div>
+
+  <h3>Test 5 — Moving Inversions 8-bit [pattern]</h3>
+  <div class="sub">Walking ones and zeros in 8-bit view: the pattern rotates through every byte and sweeps all 256 combinations (8 bits). Catches failures that depend on neighboring bits within a byte. Analogue of MemTest86+ T6.</div>
+
+  <h3>Test 6 — Modulo-20 [anti-cache]</h3>
+  <div class="sub">A pattern with a 20-address stride, chosen so it cannot be "masked" by the cache (beats cache associativity). Writes and verifies from that stride. Analogue of MemTest86+ T7.</div>
+
+  <h3>Test 7 — Block move [64 moves]</h3>
+  <div class="sub">Block move of 64 memory blocks into each other and back. Stresses the memory bus with bulk copies; catches errors under heavy multi-channel work and row/column failures under load. Analogue of MemTest86+ T8. The verification pass is correctly interrupted when the test is stopped — phantom errors excluded (v2.82).</div>
+
+  <h3>Test 8 — Moving Inversions 32/64 [shift]</h3>
+  <div class="sub">A pattern shifted by one bit per address, with 64 different offsets. Covers all bit-shift combinations in 32/64-bit words. Analogue of MemTest86+ T9.</div>
+
+  <h3>Test 9 — Bit-Fade / retention [direct]</h3>
+  <div class="sub">Fills all memory with a pattern, waits 30 seconds (retention pause) and re-reads. Finds cells losing charge — degradation (retention) failures that other tests miss because they verify right after writing. Analogue of MemTest86+ T10.</div>
+
+  <h3>Test 10 — Rowhammer [Blacksmith-style]</h3>
+  <div class="sub">A simplified Blacksmith approach: intensively hammers aggressor rows, then checks neighboring victim rows. Catches charge leakage between physically adjacent rows under frequent activation — the classic Rowhammer failure. Analogue of MemTest86+ v7 Test 11.</div>
+
+  <h3>Test 11 — March-C- multi-pattern [direct]</h3>
+  <div class="sub">6-phase March-C- with three patterns over physical memory (no cache interference). Covers stuck bits, transition faults and coupling faults between adjacent cells. One of the strongest functional tests.</div>
+
+  <h3>Test 12 — Checkerboard / Adjacent-Cell [direct]</h3>
+  <div class="sub">Checkerboard fill (alternating 0/1) + a "butterfly" phase (flipping neighbor cells). Checks coupling influence of adjacent cells on each other and on the data bus.</div>
+
+  <h3>Test 13 — Walking Ones/Zeros [exhaustive]</h3>
+  <div class="sub">Full exhaustive test: a one "walks" through every bit of every word, then the inversion. Very slow but maximally complete per-bit coverage. Analogue of MemTest86+ T13/Walking.</div>
+
+  <h3>Test 14 — Cache Evict Storm [CLFLUSH]</h3>
+  <div class="sub">Every cache line is force-evicted with CLFLUSH before reading — every read goes physically to DRAM. Loads the memory controller and VRM with a heavy uncached read stream.</div>
+
+  <h3>Test 15 — VRM Square-Wave [AVX2]</h3>
+  <div class="sub">Square-wave load switching on the VRM: 10 Hz cycles of "AVX2 FMA burst" ↔ "idle". Creates sharp current transients; catches memory power instability, voltage droops and related failures.</div>
+
+  <h3>Test 16 — L3 Stress [L3 resident]</h3>
+  <div class="sub">Read-modify-write in a ~1 MB set that fits in L3. A closed loop over the same lines — repeatedly loads specific banks and rows; catches hidden retention/coupling failures in "hot" rows.</div>
+
+  <h3>Test 17 — Thermal Soak [3 min, AVX2]</h3>
+  <div class="sub">3 minutes of continuous AVX2 FMA load + writes on all cores. Heats the memory and IMC to maximum power; catches temperature-dependent failures (appear only on hot memory). Temperature is monitored throughout.</div>
+
+  <h3>Test 18 — BW Soak [5 min, AVX2]</h3>
+  <div class="sub">5 minutes of streaming writes (non-temporal stores, vmovntdq — no cache pollution) followed by verification. Keeps the memory controller at maximum bus/channel bandwidth; catches failures under full bus load.</div>
+
+  <h3>Test 19 — Stride-sweep BW [probe]</h3>
+  <div class="sub">Read bandwidth measurement at strides of 64B / 1KB / 4KB / 64KB. Probes cache associativity and channel/bank interleaving — a performance diagnostic, not just errors: shows whether memory meets its rated characteristics.</div>
+
+  <h3>Test 20 — Vector PRSG [AVX2]</h3>
+  <div class="sub">A pseudo-random 4×64-bit stream (xorshift) on AVX2: fill + forward/reverse verification. High-entropy patterns cover inter-bit dependencies that "orderly" patterns miss.</div>
+
+  <h3>Test 21 — Rowhammer [TRR-safe]</h3>
+  <div class="sub">TRRespass-style: 8 primary aggressor rows with a simple stride + rotation, double activations for DDR5. Bypasses TRR (Target Row Refresh) protection — finds vulnerable rows that "ordinary" Rowhammer 10 misses because of refresh protection.</div>
+
+  <h3>Test 22 — Bit-Fade Sweep [retention]</h3>
+  <div class="sub">Graded degradation sweep: 5/30/120 s pauses (solid one); on detecting a fade — escalation to 5/15/30/60/120 s with two patterns. Produces a CRITICAL/WARNING/OK verdict from the first failure and stable addresses.</div>
+
+  <h3>Test 23 — CFst [state coupling]</h3>
+  <div class="sub">Writes state into an aggressor row of the same bank, then reads the victim row without a reset. Finds coupling faults where the aggressor state affects reading the adjacent row (state-coupling fault).</div>
+
+  <h3>Test 24 — March SS [22-phase]</h3>
+  <div class="sub">22-phase march test: full state-coupling (CFst) + transition fault (TF) coverage. The most complete march algorithm in use.</div>
+
+  <h3>Run All Tests</h3>
+  <div class="sub">Runs the functional tests 1-13 twice, then thermal/load 14-20 four times (shown as x2/x4 in the progress). Stops on ESC. Results are collected into a table with per-test speed, bandwidth and skip reasons (e.g. no AVX2 / no CLFLUSH / isolated slot).</div>
+</div>
+
+<div class="card">
+  <h2>Анализ ошибок и диагностика</h2>
+  <span class="lang">RU</span>
+  <ul class="features">
+    <li>
+      <strong>Живой декод адреса</strong> — текущий физический адрес раскладывается в канал/планку/ранг/банк-группу/банк/строку/столбец (формат Intel SA_ADDRESS_DECODE) через восстановленную карту памяти; правая панель рисует планку с подсветкой активного ранга и подсчётом ошибок по микросхемам.
+    </li>
+    <li>
+      <strong>Восстановление карты адресов (методика DRAMA)</strong> — по таймингу CLFLUSH и латентности пар адресов определяются биты банков, шаг строк, канал/DIMM-интерлив и ранг; каждая функция самопроверяется через same-bank set'ы (неверный кандидат не может пройти). Для DDR4 отдельно выделяются биты банк-группы.
+    </li>
+    <li>
+      <strong>Анализ залипших битов</strong> — подсчёт ошибок по каждому из 64 битов данных, вывод «залипших» и «плавающих» битов.
+    </li>
+    <li>
+      <strong>DIMM Error Map</strong> — карта ошибок по планкам и микросхемам (DQ), монотонные счётчики без обрезания; автоизоляция неисправной планки (SMBIOS Type 20) с вердиктом REPLACE / перестановка слотов.
+    </li>
+    <li>
+      <strong>Chip diagnosis (DQ map / Raw Card)</strong> — для DDR4 каждый бит ошибки переводится в физическую линию DQ через JEDEC nibble-карту (SPD 60-77) с rank mirroring, и в конкретный чип на планке; DQ-карта сверяется с эталоном Raw Card (SPD 130) → OK/MISMATCH. Для DDR3 — стандартная JEDEC-группировка bit/width (в SPD нет DQ-карты).
+    </li>
+    <li>
+      <strong>BadRAM export</strong> — генерация строк <span class="file">badram=addr,mask</span> / <span class="file">memmap=</span> / <span class="file">pages=</span> для GRUB2, Linux и Windows (bcdedit). Слияние по алгоритму memtest86+ badram.c, ≤20 паттернов, гарантированное покрытие. Rowhammer и кэш-фантомы исключаются.
+    </li>
+    <li>
+      <strong>Flaky-errors / cache-phantom</strong> — повторная проверка подозрительного адреса через разные пути (WBINVD / CLFLUSH / non-temporal / uncached): если ошибка «плавает» между прогонами — это кэш-фантом, помечается отдельно от настоящих ошибок.
+    </li>
+    <li>
+      <strong>Телеметрия платформы</strong> — счётчики IMC retry/replay (Intel MCHBAR): +0 clean / предупреждение / VERDICT «marginal DRAM signal»; мощность RAPL / fam15h, температура, MCA/ECC и перезапуски за прогон; сводка в NVRAM для сравнения между загрузками (ошибки, Tmax, BW).
+    </li>
+  </ul>
+
+  <span class="lang">EN</span>
+  <h3>English — error analysis and diagnostics</h3>
+  <ul class="features">
+    <li>
+      <strong>Live address decode</strong> — the current physical address is decomposed into channel/DIMM/rank/bank-group/bank/row/column (Intel SA_ADDRESS_DECODE format) via the recovered memory map; the right panel draws the module with the active rank highlighted and per-chip error counts.
+    </li>
+    <li>
+      <strong>Address map recovery (DRAMA method)</strong> — CLFLUSH timing and address-pair latency are used to derive bank bits, row stride, channel/DIMM interleave and rank; every function self-checks via same-bank sets (a wrong candidate cannot pass). For DDR4 the bank-group bits are derived separately.
+    </li>
+    <li>
+      <strong>Stuck-bit analysis</strong> — error counts per each of the 64 data bits; "stuck" and "floating" bits are reported.
+    </li>
+    <li>
+      <strong>DIMM Error Map</strong> — error map per module and chip (DQ), monotonic counters without truncation; auto-isolation of the faulty module (SMBIOS Type 20) with a REPLACE / slot-swap verdict.
+    </li>
+    <li>
+      <strong>Chip diagnosis (DQ map / Raw Card)</strong> — for DDR4 every failing bit is translated into a physical DQ line via the JEDEC nibble map (SPD 60-77) with rank mirroring, and into a specific chip on the module; the DQ map is verified against the Raw Card reference (SPD 130) → OK/MISMATCH. For DDR3 — standard JEDEC bit/width grouping (no DQ map in SPD).
+    </li>
+    <li>
+      <strong>BadRAM export</strong> — generates <span class="file">badram=addr,mask</span> / <span class="file">memmap=</span> / <span class="file">pages=</span> lines for GRUB2, Linux and Windows (bcdedit). Merging follows the memtest86+ badram.c algorithm, ≤20 patterns, guaranteed coverage. Rowhammer and cache phantoms are excluded.
+    </li>
+    <li>
+      <strong>Flaky errors / cache phantom</strong> — the suspect address is re-checked through different paths (WBINVD / CLFLUSH / non-temporal / uncached): if the error "floats" between passes it is a cache phantom and is tagged separately from real errors.
+    </li>
+    <li>
+      <strong>Platform telemetry</strong> — IMC retry/replay counters (Intel MCHBAR): +0 clean / warning / VERDICT "marginal DRAM signal"; RAPL / fam15h power, temperature, MCA/ECC and restarts per run; a summary goes to NVRAM for cross-boot comparison (errors, Tmax, BW).
+    </li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Файлы, которые создаёт программа на флешке</h2>
+  <span class="lang">RU</span>
+  <table>
+    <tr><th>Файл</th><th>Что это</th></tr>
+    <tr><td><span class="file">&lt;mfr&gt;_DDRx_&lt;тип&gt;_&lt;объём&gt;GB_&lt;скорость&gt;_&lt;part&gt;_dimmN.bin</span></td><td>сырой SPD каждой планки (512 байт DDR4 / 1024 байт DDR5 / 256 байт DDR3), имя из производителя и part number</td></tr>
+    <tr><td><span class="file">&lt;модель_платы&gt;.bin</span></td><td>полный дамп SPI BIOS</td></tr>
+    <tr><td><span class="file">vbios_B*_D*_VID_DID.bin</span></td><td>дамп Option ROM видеокарты</td></tr>
+    <tr><td><span class="file">spd_report.txt</span></td><td>отчёт: SMBIOS Type 17 + лог чтения SPD + телеметрия платформы</td></tr>
+    <tr><td><span class="file">result_report.html</span></td><td>итоговый отчёт прогона: вердикт PASS/FAIL, таблица планок (объём/ошибки/вердикт), температура CPU, версии программы</td></tr>
+    <tr><td><span class="file">memtest.log</span></td><td>полный лог тестов (удаляется при каждой загрузке)</td></tr>
+    <tr><td><span class="file">test_marker.txt</span></td><td>маркеры прогресса для диагностики зависаний (переживает хард-ресет)</td></tr>
+    <tr><td><span class="file">spi_restore_log.txt</span></td><td>лог операции восстановления BIOS</td></tr>
+    <tr><td><span class="file">result_dump.txt / dimm_map_dump.txt / menu_dump.txt / test_dump.txt / config_dump.txt</span></td><td>F1-дампы экранов по нажатию</td></tr>
+  </table>
+  <div class="sub" style="margin-top:10px">Дампы SPD можно открывать в Thaiphoon Burner, HWiNFO, RAMMon или hex-просмотрщике.</div>
+
+  <span class="lang">EN</span>
+  <h3>English — files created on the stick</h3>
+  <table>
+    <tr><th>File</th><th>What it is</th></tr>
+    <tr><td><span class="file">&lt;mfr&gt;_DDRx_&lt;type&gt;_&lt;size&gt;GB_&lt;speed&gt;_&lt;part&gt;_dimmN.bin</span></td><td>raw SPD of each module (512 bytes DDR4 / 1024 bytes DDR5 / 256 bytes DDR3), named from the vendor and part number</td></tr>
+    <tr><td><span class="file">&lt;board_model&gt;.bin</span></td><td>full SPI BIOS dump</td></tr>
+    <tr><td><span class="file">vbios_B*_D*_VID_DID.bin</span></td><td>GPU option ROM dump</td></tr>
+    <tr><td><span class="file">spd_report.txt</span></td><td>report: SMBIOS Type 17 + SPD read log + platform telemetry</td></tr>
+    <tr><td><span class="file">result_report.html</span></td><td>final run report: PASS/FAIL verdict, module table (size/errors/verdict), CPU temperature, program versions</td></tr>
+    <tr><td><span class="file">memtest.log</span></td><td>full test log (cleared on every start)</td></tr>
+    <tr><td><span class="file">test_marker.txt</span></td><td>progress markers for hang diagnosis (survives a hard reset)</td></tr>
+    <tr><td><span class="file">spi_restore_log.txt</span></td><td>BIOS restore operation log</td></tr>
+    <tr><td><span class="file">result_dump.txt / dimm_map_dump.txt / menu_dump.txt / test_dump.txt / config_dump.txt</span></td><td>F1 screen dumps per screen</td></tr>
+  </table>
+  <div class="sub" style="margin-top:10px">SPD dumps can be opened in Thaiphoon Burner, HWiNFO, RAMMon or a hex viewer.</div>
+</div>
+
+<div class="card">
+  <h2>Поддерживаемое железо</h2>
+  <span class="lang">RU</span>
+  <ul class="features">
+    <li>
+      <strong>SMBus (SPD)</strong> — Intel legacy (B0:D31:F3), Intel PCH (B0:D31:F4), AMD FCH / ATI SBx00 (B0:D20:F0, включая SB6xx–SB9xx, Hudson/Bolton/Promontory). Прямое чтение страницы SPD 0 с фолбэком при блокировке.
+    </li>
+    <li>
+      <strong>SPI BIOS</strong> — Intel PCH (HWSEQ, MMIO, фиксированные SPIBAR 0xFED01000 / 0xFED1F800), AMD FCH FIFO (SB6xx–Bolton), AMD SPI100 (Yangtze, Promontory, Zen2/3/4).
+    </li>
+    <li>
+      <strong>IMC live-config</strong> — Intel MCHBAR (Skylake/Coffee Lake и аналоги, включая CAS-тайминги), AMD Zen SMN/UMC; счётчики IMC retry/replay на Intel.
+    </li>
+    <li>
+      <strong>Мониторинг</strong> — мощность RAPL (Intel/AMD), fam15h, температура, MCA/ECC, определение перезагрузок.
+    </li>
+    <li>
+      <strong>SIMD</strong> — AVX2 для нагрузочных тестов 15/17/18/20 (при отсутствии — тесты помечаются «skip: no AVX2», остальные работают).
+    </li>
+    <li>
+      <strong>Архитектура</strong> — только X64 (UEFI).
+    </li>
+  </ul>
+  <div class="sub">На части серверных плат BIOS блокирует SPD-диапазон после инициализации памяти — тогда чтение вернёт 0xFF (планка будет помечена как empty/blocked), но SMBIOS-данные всё равно попадут в отчёт.</div>
+
+  <span class="lang">EN</span>
+  <h3>English — supported hardware</h3>
+  <ul class="features">
+    <li>
+      <strong>SMBus (SPD)</strong> — Intel legacy (B0:D31:F3), Intel PCH (B0:D31:F4), AMD FCH / ATI SBx00 (B0:D20:F0, including SB6xx-SB9xx, Hudson/Bolton/Promontory). Direct SPD page-0 read with a fallback when locked.
+    </li>
+    <li>
+      <strong>SPI BIOS</strong> — Intel PCH (HWSEQ, MMIO, fixed SPIBAR 0xFED01000 / 0xFED1F800), AMD FCH FIFO (SB6xx-Bolton), AMD SPI100 (Yangtze, Promontory, Zen2/3/4).
+    </li>
+    <li>
+      <strong>IMC live-config</strong> — Intel MCHBAR (Skylake/Coffee Lake and similar, including CAS timings), AMD Zen SMN/UMC; IMC retry/replay counters on Intel.
+    </li>
+    <li>
+      <strong>Monitoring</strong> — RAPL power (Intel/AMD), fam15h, temperature, MCA/ECC, restart detection.
+    </li>
+    <li>
+      <strong>SIMD</strong> — AVX2 for load tests 15/17/18/20 (when absent those tests are marked "skip: no AVX2"; the rest still run).
+    </li>
+    <li>
+      <strong>Architecture</strong> — X64 (UEFI) only.
+    </li>
+  </ul>
+  <div class="sub">On some server boards the BIOS locks the SPD range after memory init — the read then returns 0xFF (the module is marked empty/blocked), but SMBIOS data still reaches the report.</div>
+</div>
+
+<footer>
+  UEFI Kit Lab &middot; v2.82 &middot; сборка дистрибутива / distribution build: <span class="file">Make-Dist.bat</span>
+</footer>
+
+</div>
+</body>
+</html>

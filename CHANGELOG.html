@@ -1,44 +1,200 @@
 ﻿<!DOCTYPE html>
 <html lang="ru"><head><meta charset="utf-8">
-<title>UEFI Kit Lab - CHANGELOG</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UEFI Kit Lab — CHANGELOG</title>
 <style>
 body{font-family:"Segoe UI",Arial,sans-serif;background:#f4f6fa;color:#1c2330;max-width:880px;margin:0 auto;padding:24px 20px 40px;line-height:1.55}
-h1{font-size:24px;color:#0a58ca;border-bottom:2px solid #d9dee8;padding-bottom:8px}
-.v{background:#fff;border:1px solid #d9dee8;border-radius:10px;padding:12px 18px;margin:10px 0;font-size:15px}
-.v b{color:#0d6efd}
-.note{color:#5a6474;font-size:13px;margin-top:22px;border-top:1px solid #d9dee8;padding-top:10px}
+header{background:linear-gradient(135deg,#0a58ca,#00337a);color:#fff;border-radius:14px;padding:28px 28px 20px;margin-bottom:22px}
+header h1{margin:0 0 6px;font-size:26px}
+header p{margin:0;opacity:.92;font-size:14.5px}
+.v{background:#fff;border:1px solid #d9dee8;border-left:4px solid #0d6efd;border-radius:12px;padding:14px 20px;margin:12px 0;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+.v .tag{display:inline-block;background:#e7f0ff;color:#0a58ca;border-radius:6px;padding:1px 10px;font-weight:700;font-size:14px;margin-right:10px}
+.v .date{color:#5a6474;font-size:13px;float:right;margin-top:2px}
+.v .ru{font-size:15px;font-weight:600}
+.v .en{color:#5a6474;font-size:14px;margin-top:3px}
+.foot{color:#5a6474;font-size:13px;text-align:center;margin-top:22px;border-top:1px solid #d9dee8;padding-top:10px}
 </style></head><body>
-<h1>UEFI Kit Lab — CHANGELOG</h1>
-<p>История версий (основные изменения, начиная с v2.52). / Version history (key changes, from v2.52 on).</p>
-<div class="v"><b>v2.82 — BlockMove verify при байле + leak вместо UAF при истёкшем дренаже (2026-09-04)</b></div>
-<div class="v"><b>v2.81 — BW-вердикт &#171;шум доминирует&#187; + версия в result_report (2026-09-02)</b></div>
-<div class="v"><b>v2.80 — BW drop: ложный &#171;severe&#187; на Bit-Fade + точность rate (2026-09-01)</b></div>
-<div class="v"><b>v2.79 — главное меню: Test Memory = пункт 1 (2026-09-01)</b></div>
-<div class="v"><b>v2.78 — плавный секундомер/экран: do_tick сердцебиения во ВСЕХ кернелах (2026-09-01)</b></div>
-<div class="v"><b>v2.77 — скорость памяти: методология как у референсного MemTest86 (2026-09-01)</b></div>
-<div class="v"><b>v2.76 — fix zombie-AP: &#171;Test 9 MovInvShift&#187; записи из теста 8 (2026-09-01)</b></div>
-<div class="v"><b>v2.75 — Test 0: честный прогресс-счётчик + заголовок Results без переноса (2026-09-01)</b></div>
-<div class="v"><b>v2.74 — fixes CRIT-1..CRIT-4 + MIN-1/MIN-2/MIN-3 + I-7 (верификация аудита v2.73) (2026-08-31)</b></div>
-<div class="v"><b>v2.73 — REVERT M1 TLog spinlock (регрессия: hang при старте теста) (2026-08-29)</b></div>
-<div class="v"><b>v2.72 — fix M13: SmpApProc ApIdx defensive init (шаг 19 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.71 — fix M12: PwrMca defensive гварды (шаг 18) (2026-08-29)</b></div>
-<div class="v"><b>v2.70 — M11: ECAM-кандидаты KNOWN LIMITATION (шаг 17) (2026-08-29)</b></div>
-<div class="v"><b>v2.69 — fix M1: TLog/TLogFlush спинлок (шаг 16 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.68 — fix M2: дедлайн + температурный кулдаун между тестами (шаг 15) (2026-08-29)</b></div>
-<div class="v"><b>v2.67 — fix M10: SmbusAmd отказ от полу-битых пар (шаг 14 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.66 — fix M9: детекция не меняет BIOS_CNTL (шаг 13 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.65 — write-probe УДАЛЁН из автоматического отчёта (шаг 12) (2026-08-29)</b></div>
-<div class="v"><b>v2.63 — M8: задокументировано известное ограничение EXEC-latch (шаг 11) (2026-08-29)</b></div>
-<div class="v"><b>v2.62 — fix M7: write-probe читает сектор до стирания (шаг 10 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.61 — fix M6: кросс-чек гейты save/restore вместо безусловного сброса (шаг 9 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.60 — fix M5: AmdSpiUnlockController обе гейт-записи в одну (шаг 8 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.59 — fix M4: DrawTestStrip MaxPass учитывает Easy-режим (шаг 7 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.58 — fix M3: tracking arrays 21 → 26 (шаг 6 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.57 — fix C5: DDR5 part-number overflow в SPD-образ (шаг 5 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.56 — fix C4: Method-гейт для gates-эксперимента и write-probe (шаг 4 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.55 — fix C3: PP/FIFO overflow + bounds в AmdSpi100Cmd (шаг 3 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.54 — fix C2: мусорный restore в write-probe удалён (шаг 2 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.53 — fix C1: Stress/Marathon time-based (шаг 1 аудита) (2026-08-29)</b></div>
-<div class="v"><b>v2.52 — Аудит футеров: все подсказки = реальность (2026-08-29)</b></div>
-<div class="note">UEFI Kit Lab · только основные изменения по версиям / key changes only · ruuucker-style minimal view</div>
+<header><h1>UEFI Kit Lab — CHANGELOG</h1>
+<p>История версий: основные изменения, начиная с v2.52. / Version history: key changes, from v2.52 on. RU and EN per entry.</p></header>
+<div class="v">
+  <span class="date">2026-09-04</span>
+  <span class="tag">v2.82</span>
+  <div class="ru">BlockMove verify при байле + leak вместо UAF при истёкшем дренаже</div>
+  <div class="en">BlockMove verify skip on bail + leak instead of UAF on expired drain</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-02</span>
+  <span class="tag">v2.81</span>
+  <div class="ru">BW-вердикт &#171;шум доминирует&#187; + версия в result_report</div>
+  <div class="en">Honest result_report version + BW verdict noise-floor note</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-01</span>
+  <span class="tag">v2.80</span>
+  <div class="ru">BW drop: ложный &#171;severe&#187; на Bit-Fade + точность rate</div>
+  <div class="en">BW drop: no more false &#39;severe&#39; after Bit-Fade + rate precision</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-01</span>
+  <span class="tag">v2.79</span>
+  <div class="ru">главное меню: Test Memory = пункт 1</div>
+  <div class="en">Main menu: Test Memory is item 1</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-01</span>
+  <span class="tag">v2.78</span>
+  <div class="ru">плавный секундомер/экран: do_tick сердцебиения во ВСЕХ кернелах</div>
+  <div class="en">Smooth stopwatch/display: do_tick heartbeats in every kernel</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-01</span>
+  <span class="tag">v2.77</span>
+  <div class="ru">скорость памяти: методология как у референсного MemTest86</div>
+  <div class="en">Memory bandwidth: MemTest86 methodology (read+write), shown on screen</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-01</span>
+  <span class="tag">v2.76</span>
+  <div class="ru">fix zombie-AP: &#171;Test 9 MovInvShift&#187; записи из теста 8</div>
+  <div class="en">Zombie-AP fix: no more phantom &#39;Test 9 MovInvShift&#39; records</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-01</span>
+  <span class="tag">v2.75</span>
+  <div class="ru">Test 0: честный прогресс-счётчик + заголовок Results без переноса</div>
+  <div class="en">Test 0: honest progress counter + Results title/footer fixes</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-31</span>
+  <span class="tag">v2.74</span>
+  <div class="ru">fixes CRIT-1..CRIT-4 + MIN-1/MIN-2/MIN-3 + I-7 (верификация аудита v2.73)</div>
+  <div class="en">Independent audit fix pack: CRIT-1..4 + MIN-1/2/3 + I-7</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.73</span>
+  <div class="ru">REVERT M1 TLog spinlock (регрессия: hang при старте теста)</div>
+  <div class="en">REVERT M1 TLog spinlock (regression: hang on Intel)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.72</span>
+  <div class="ru">fix M13: SmpApProc ApIdx defensive init (шаг 19 аудита)</div>
+  <div class="en">M13: SmpApProc ApIdx defensive init</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.71</span>
+  <div class="ru">fix M12: PwrMca defensive гварды (шаг 18)</div>
+  <div class="en">M12: PwrMca defensive gate (MCG_CTL_P)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.70</span>
+  <div class="ru">M11: ECAM-кандидаты KNOWN LIMITATION (шаг 17)</div>
+  <div class="en">M11: ECAM-probe KNOWN LIMITATION</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.69</span>
+  <div class="ru">fix M1: TLog/TLogFlush спинлок (шаг 16 аудита)</div>
+  <div class="en">M1: TLog/TLogFlush sync (step 16)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.68</span>
+  <div class="ru">fix M2: дедлайн + температурный кулдаун между тестами (шаг 15)</div>
+  <div class="en">M2: marathon deadline + thermal cooldown pauses (step 15)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.67</span>
+  <div class="ru">fix M10: SmbusAmd отказ от полу-битых пар (шаг 14 аудита)</div>
+  <div class="en">M10: SmbusAmd torn-refusal gate (step 14)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.66</span>
+  <div class="ru">fix M9: детекция не меняет BIOS_CNTL (шаг 13 аудита)</div>
+  <div class="en">M9: the second BIOS_CNTL write (step 13)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.65</span>
+  <div class="ru">write-probe УДАЛЁН из автоматического отчёта (шаг 12)</div>
+  <div class="en">Write-probe removed from the automatic report (step 12)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.63</span>
+  <div class="ru">M8: задокументировано известное ограничение EXEC-latch (шаг 11)</div>
+  <div class="en">M8: EXEC-latch re-arming documented limitation (step 11)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.62</span>
+  <div class="ru">fix M7: write-probe читает сектор до стирания (шаг 10 аудита)</div>
+  <div class="en">M7: write-probe erases one sector (step 10)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.61</span>
+  <div class="ru">fix M6: кросс-чек гейты save/restore вместо безусловного сброса (шаг 9 аудита)</div>
+  <div class="en">M6: cross-check save/restore without early exits (step 9)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.60</span>
+  <div class="ru">fix M5: AmdSpiUnlockController обе гейт-записи в одну (шаг 8 аудита)</div>
+  <div class="en">M5: AmdSpiUnlockController single write (step 8)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.59</span>
+  <div class="ru">fix M4: DrawTestStrip MaxPass учитывает Easy-режим (шаг 7 аудита)</div>
+  <div class="en">M4: DrawTestStrip MaxPass respects Easy mode (step 7)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.58</span>
+  <div class="ru">fix M3: tracking arrays 21 → 26 (шаг 6 аудита)</div>
+  <div class="en">M3: tracking arrays 21 -&gt; 26 (step 6)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.57</span>
+  <div class="ru">fix C5: DDR5 part-number overflow в SPD-образ (шаг 5 аудита)</div>
+  <div class="en">C5: DDR5 part-number overflow vs SPD region (step 5)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.56</span>
+  <div class="ru">fix C4: Method-гейт для gates-эксперимента и write-probe (шаг 4 аудита)</div>
+  <div class="en">C4: Method-gate for write-probe gates (step 4)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.55</span>
+  <div class="ru">fix C3: PP/FIFO overflow + bounds в AmdSpi100Cmd (шаг 3 аудита)</div>
+  <div class="en">C3: PP/FIFO overflow + bounds in AmdSpi100Cmd (step 3)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.54</span>
+  <div class="ru">fix C2: мусорный restore в write-probe удалён (шаг 2 аудита)</div>
+  <div class="en">C2: blind restore in write-probe removed (step 2)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.53</span>
+  <div class="ru">fix C1: Stress/Marathon time-based (шаг 1 аудита)</div>
+  <div class="en">C1: Stress/Marathon time-based (step 1)</div>
+</div>
+<div class="v">
+  <span class="date">2026-08-29</span>
+  <span class="tag">v2.52</span>
+  <div class="ru">Аудит футеров: все подсказки = реальность</div>
+  <div class="en">Footer audit: every hint matches reality</div>
+</div>
+<div class="foot">UEFI Kit Lab · только основные изменения / key changes only</div>
 </body></html>
