@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<title>UEFI Kit Lab - CHANGELOG</title>
+<style>
+body{font-family:"Segoe UI",Arial,sans-serif;background:#f4f6fa;color:#1c2330;max-width:880px;margin:0 auto;padding:24px 20px 40px;line-height:1.55}
+h1{font-size:24px;color:#0a58ca;border-bottom:2px solid #d9dee8;padding-bottom:8px}
+.v{background:#fff;border:1px solid #d9dee8;border-radius:10px;padding:12px 18px;margin:10px 0;font-size:15px}
+.v b{color:#0d6efd}
+.note{color:#5a6474;font-size:13px;margin-top:22px;border-top:1px solid #d9dee8;padding-top:10px}
+</style></head><body>
+<h1>UEFI Kit Lab — CHANGELOG</h1>
+<p>История версий (основные изменения, начиная с v2.52). / Version history (key changes, from v2.52 on).</p>
+<div class="v"><b>v2.82 — BlockMove verify при байле + leak вместо UAF при истёкшем дренаже (2026-09-04)</b></div>
+<div class="v"><b>v2.81 — BW-вердикт &#171;шум доминирует&#187; + версия в result_report (2026-09-02)</b></div>
+<div class="v"><b>v2.80 — BW drop: ложный &#171;severe&#187; на Bit-Fade + точность rate (2026-09-01)</b></div>
+<div class="v"><b>v2.79 — главное меню: Test Memory = пункт 1 (2026-09-01)</b></div>
+<div class="v"><b>v2.78 — плавный секундомер/экран: do_tick сердцебиения во ВСЕХ кернелах (2026-09-01)</b></div>
+<div class="v"><b>v2.77 — скорость памяти: методология как у референсного MemTest86 (2026-09-01)</b></div>
+<div class="v"><b>v2.76 — fix zombie-AP: &#171;Test 9 MovInvShift&#187; записи из теста 8 (2026-09-01)</b></div>
+<div class="v"><b>v2.75 — Test 0: честный прогресс-счётчик + заголовок Results без переноса (2026-09-01)</b></div>
+<div class="v"><b>v2.74 — fixes CRIT-1..CRIT-4 + MIN-1/MIN-2/MIN-3 + I-7 (верификация аудита v2.73) (2026-08-31)</b></div>
+<div class="v"><b>v2.73 — REVERT M1 TLog spinlock (регрессия: hang при старте теста) (2026-08-29)</b></div>
+<div class="v"><b>v2.72 — fix M13: SmpApProc ApIdx defensive init (шаг 19 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.71 — fix M12: PwrMca defensive гварды (шаг 18) (2026-08-29)</b></div>
+<div class="v"><b>v2.70 — M11: ECAM-кандидаты KNOWN LIMITATION (шаг 17) (2026-08-29)</b></div>
+<div class="v"><b>v2.69 — fix M1: TLog/TLogFlush спинлок (шаг 16 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.68 — fix M2: дедлайн + температурный кулдаун между тестами (шаг 15) (2026-08-29)</b></div>
+<div class="v"><b>v2.67 — fix M10: SmbusAmd отказ от полу-битых пар (шаг 14 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.66 — fix M9: детекция не меняет BIOS_CNTL (шаг 13 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.65 — write-probe УДАЛЁН из автоматического отчёта (шаг 12) (2026-08-29)</b></div>
+<div class="v"><b>v2.63 — M8: задокументировано известное ограничение EXEC-latch (шаг 11) (2026-08-29)</b></div>
+<div class="v"><b>v2.62 — fix M7: write-probe читает сектор до стирания (шаг 10 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.61 — fix M6: кросс-чек гейты save/restore вместо безусловного сброса (шаг 9 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.60 — fix M5: AmdSpiUnlockController обе гейт-записи в одну (шаг 8 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.59 — fix M4: DrawTestStrip MaxPass учитывает Easy-режим (шаг 7 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.58 — fix M3: tracking arrays 21 → 26 (шаг 6 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.57 — fix C5: DDR5 part-number overflow в SPD-образ (шаг 5 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.56 — fix C4: Method-гейт для gates-эксперимента и write-probe (шаг 4 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.55 — fix C3: PP/FIFO overflow + bounds в AmdSpi100Cmd (шаг 3 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.54 — fix C2: мусорный restore в write-probe удалён (шаг 2 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.53 — fix C1: Stress/Marathon time-based (шаг 1 аудита) (2026-08-29)</b></div>
+<div class="v"><b>v2.52 — Аудит футеров: все подсказки = реальность (2026-08-29)</b></div>
+<div class="note">UEFI Kit Lab · только основные изменения по версиям / key changes only · ruuucker-style minimal view</div>
+</body></html>
