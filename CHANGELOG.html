@@ -17,6 +17,162 @@ header p{margin:0;opacity:.92;font-size:14.5px}
 <header><h1>UEFI Kit Lab — CHANGELOG</h1>
 <p>История версий: основные изменения, начиная с v2.52. / Version history: key changes, from v2.52 on. RU and EN per entry.</p></header>
 <div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.09</span>
+  <div class="ru">двухканальная раскладка: привязка каналов по MAD, честный учёт &#171;обеих планок&#187; при интерливе</div>
+  <div class="en">Dual-channel: channels bound by MAD size; honest two-DIMM counts inside the interleave zone</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.08</span>
+  <div class="ru">метод референса (MAD_DIMM, а не Type 20) + лог привязки &#171;ранг → планка&#187;</div>
+  <div class="en">Reference method (MAD_DIMM, not SMBIOS Type 20) + rank-to-DIMM binding log</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.07</span>
+  <div class="ru">ранг привязывается к планке ПО РАЗМЕРУ (MAD_DIMM), а не по позиции слота</div>
+  <div class="en">Rank-to-DIMM binding by MAD_DIMM size (MRC CS order is not the slot order)</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.06</span>
+  <div class="ru">fix атрибуции для интерлива 2 планок на одном канале (бит ранга = первый бит строки)</div>
+  <div class="en">2-DIMM attribution: rank bit = first row bit, address decode verified on hardware</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.05</span>
+  <div class="ru">fix атрибуции ошибок при нескольких планках (интерлит на одном канале)</div>
+  <div class="en">2-DIMM attribution: DRAMA probe for multi-DIMM + physical-to-logical slot index</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.04</span>
+  <div class="ru">fix отображения битого чипа (DDR4 SPD width/ranks) + удаление тестовых проб</div>
+  <div class="en">Wrong chip fix: DDR4 SPD width/ranks were read from byte 12; diagnostic probes removed</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.03</span>
+  <div class="ru">КОРНЕВАЯ ПРИЧИНА зависания на битой планке: неинициализированный `gDiagCacheLock`</div>
+  <div class="en">Test 3/4 hang root cause: gDiagCacheLock was never initialized (uninit spinlock)</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.02</span>
+  <div class="ru">DIAGNOSTIC BUILD #7: счётчик вызовов + метки внутри DQ-диагностики</div>
+  <div class="en">Diagnostic build #7: fault marker + DQ diagnostics finish</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.01</span>
+  <div class="ru">DIAGNOSTIC BUILD #6: экранные метки входа/выхода ядра (E1..E5 + K6..K8)</div>
+  <div class="en">Diagnostic build #6: read/write bit tests off (E1..E5 + K6..K8)</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v3.00</span>
+  <div class="ru">DIAGNOSTIC BUILD #5: экранный трейс пути ошибки (4 контрольные точки)</div>
+  <div class="en">Diagnostic build #5: on-screen error stage counters (4 progress levels)</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v2.99</span>
+  <div class="ru">DIAGNOSTIC BUILD #4: путь ошибки без единого обращения к прошивке</div>
+  <div class="en">Diagnostic build #4: error path with no file-system I/O at all</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v2.98</span>
+  <div class="ru">DIAGNOSTIC BUILD #3: выживающий след ошибок в test_marker.txt</div>
+  <div class="en">Diagnostic build #3: single-line error trail in test_marker.txt</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v2.97</span>
+  <div class="ru">DIAGNOSTIC BUILD #2: прогон без файлового I/O + след в NVRAM</div>
+  <div class="en">Diagnostic build #2: file I/O probe + NVRAM error marker</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-17</span>
+  <span class="tag">v2.96</span>
+  <div class="ru">DIAGNOSTIC BUILD: выживающий маркер исключения + сохранение хвоста лога</div>
+  <div class="en">Diagnostic build: freeze tracking + time-consumption probes</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-10</span>
+  <span class="tag">v2.95</span>
+  <div class="ru">fix #8: проверка AllocateCopyPool в SmbusFindController</div>
+  <div class="en">fix #8: AllocateCopyPool check in SmbusFindController</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-10</span>
+  <span class="tag">v2.94</span>
+  <div class="ru">fix N-1 (источники SPD width/ranks) + fix #5 (кламп ранков)</div>
+  <div class="en">fix N-1 (SPD width/ranks sources) + fix #5 (rank count clamp)</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-10</span>
+  <span class="tag">v2.93</span>
+  <div class="ru">fix #3: кламп индексов ApDone/ApList (SMP &gt; 64 CPU)</div>
+  <div class="en">fix #3: ApDone/ApList index clamps (SMP &gt; 64 CPUs)</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-10</span>
+  <span class="tag">v2.92</span>
+  <div class="ru">fix #1: граница записи агрессора в CFst (Test 23)</div>
+  <div class="en">fix #1: aggressor write bound in CFst (Test 23)</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-10</span>
+  <span class="tag">v2.91</span>
+  <div class="ru">fix #2: ограничен дренаж AP в последовательном SMP-режиме</div>
+  <div class="en">fix #2: bounded AP drain in sequential SMP mode</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-10</span>
+  <span class="tag">v2.90</span>
+  <div class="ru">fix #4: устранён USB-лог из AP под gErrLock</div>
+  <div class="en">fix #4: USB logging from APs moved out of gErrLock</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-10</span>
+  <span class="tag">v2.89</span>
+  <div class="ru">fix #11: %a с CHAR16* в логах (обрезка строки)</div>
+  <div class="en">fix #11: %a with CHAR16* in logs (string truncation)</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-10</span>
+  <span class="tag">v2.88</span>
+  <div class="ru">убран дублированный include в SmbusIntel.c</div>
+  <div class="en">duplicate include removed in SmbusIntel.c</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-10</span>
+  <span class="tag">v2.87</span>
+  <div class="ru">комментарии к гейту пер-слотовой температуры приведены к коду</div>
+  <div class="en">per-slot temperature gate comments aligned with code</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-09</span>
+  <span class="tag">v2.86</span>
+  <div class="ru">температура планки только в правой панели (одно место)</div>
+  <div class="en">DIMM temperature shown only in the right panel (single place)</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-09</span>
+  <span class="tag">v2.85</span>
+  <div class="ru">пер-планочные температуры: &#171;Temp: 43C&#187; / &#171;Temp: [N/A]&#187; на экране теста</div>
+  <div class="en">Per-DIMM temperatures: &#39;Temp: 43C&#39; / &#39;Temp: [N/A]&#39; on the test screen</div>
+</div>
+<div class="v">
+  <span class="date">2026-09-09</span>
+  <span class="tag">v2.83</span>
+  <div class="ru">SMBus fail-safe fixup: новые Intel PCH 600/700 (DDR5) читают SPD</div>
+  <div class="en">SMBus fail-safe fixup: new Intel PCH 600/700 (DDR5) read SPD</div>
+</div>
+<div class="v">
   <span class="date">2026-09-04</span>
   <span class="tag">v2.82</span>
   <div class="ru">BlockMove verify при байле + leak вместо UAF при истёкшем дренаже</div>

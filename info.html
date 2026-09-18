@@ -150,7 +150,7 @@
 <div class="wrap">
 
 <header>
-  <h1>UEFI Kit Lab<span class="badge">v2.82 &middot; X64 &middot; UEFI</span></h1>
+  <h1>UEFI Kit Lab<span class="badge">v3.09 &middot; X64 &middot; UEFI</span></h1>
   <span class="lang">RU</span>
   <p>Универсальный диагностический комплекс для UEFI-платформ — работает напрямую из загрузочной флешки, без установки и ОС.</p>  <p class="sub" style="margin-top:10px;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.92)">
     <strong>Анализ памяти:</strong> чтение SPD всех планок (DDR3/DDR4/DDR5) по SMBus
@@ -267,7 +267,7 @@
   <h2>Что умеет программа</h2>
   <span class="lang">RU</span>
 
-  <div class="rev">Текущая ревизия: <strong>v2.82</strong></div>
+  <div class="rev">Текущая ревизия: <strong>v3.09</strong></div>
 
   <ul class="features">
     <li>
@@ -328,6 +328,30 @@
   <h2>Что нового — изменения по версиям</h2>
   <span class="lang">RU</span>
 
+  <h3>v3.09 — двухканальные конфигурации: честная атрибуция ошибок</h3>
+  <div class="sub">Каналы привязываются к планкам по размеру из регистров MAD контроллера памяти (IMC), а не по SMBIOS Type 20. Если адрес попадает в зону интерлива и канал невозможно различить однозначно — ошибка учитывается обеим планкам, а не обвиняет неверную. Проба карты адресов (DRAMA) теперь выполняется в каждом прогоне.</div>
+
+  <h3>v3.05–v3.08 — атрибуция ошибок при двух планках</h3>
+  <div class="sub">DRAMA-проба для конфигураций с несколькими планками; корректный пересчёт физического слота в логический; бит ранга = первый бит строки (проверено арифметикой адресов); привязка ранга к планке по размеру MAD_DIMM; журнал [RANK] для проверки на железе.</div>
+
+  <h3>v3.04 — исправлено определение дефектного чипа</h3>
+  <div class="sub">Декодер DDR4 SPD брал ширину устройства и число рангов не из тех байтов и оценивал чип как x16 — отчёт указывал неверный чип. Исправлено по JEDEC: планка 4 ГБ x8 определяется верно (R0 C6, вердикт REPLACE).</div>
+
+  <h3>v3.03 — устранена причина зависаний Test 3/4</h3>
+  <div class="sub">Причина зависания на первой же реальной ошибке — неинициализированный внутренний спинлок диагностического кеша. Теперь он инициализируется при старте прогона; полный Run-All (20 тестов) проходит без зависаний.</div>
+
+  <h3>v2.96–v3.02 — диагностические сборки</h3>
+  <div class="sub">Серия временных сборок с расширенным журналированием — локализовала точку зависания (спинлок диагностического кеша).</div>
+
+  <h3>v2.87–v2.95 — серия фиксов по отчёту независимого аудита</h3>
+  <div class="sub">Согласованность источников SPD width/ranks, клампы индексов ApDone/ApList (SMP &gt; 64 CPU), границы записи агрессора в CFst, ограниченный дренаж AP, USB-логи выведены из-под gErrLock, исправления форматирования логов, проверка AllocateCopyPool.</div>
+
+  <h3>v2.85–v2.86 — температуры планок на экране теста</h3>
+  <div class="sub">Пер-планочные температуры («Temp: 43C» / «Temp: [N/A]») показываются в одном месте — в правой панели.</div>
+
+  <h3>v2.83 — SMBus fail-safe для DDR5</h3>
+  <div class="sub">Чтение SPD работает на новых Intel PCH 600/700 (DDR5) даже если прошивка не сняла защиту SPD-записи.</div>
+
   <h3>v2.82 — корректное досрочное завершение тестов</h3>
   <div class="sub">Устранены фантомные ошибки BlockMove при остановке прогона: verify-проход теперь пропускается при досрочном завершении, а память не освобождается, пока живы worker'ы. Одиночный Test 7 — чист.</div>
 
@@ -357,6 +381,30 @@
 
   <span class="lang">EN</span>
   <h3>English — What's new by version</h3>
+
+  <h3>v3.09 — dual-channel configurations: honest error attribution</h3>
+  <div class="sub">Channels are bound to modules by the size in the memory controller MAD registers, not by SMBIOS Type 20. If an address falls into the interleave zone and the channel cannot be told apart, the error is counted for both modules instead of blaming a wrong one. The DRAMA address-map probe now runs on every pass.</div>
+
+  <h3>v3.05–v3.08 — error attribution with two DIMMs</h3>
+  <div class="sub">DRAMA probe for multi-DIMM configurations; correct physical-to-logical slot mapping; rank bit = first row bit (verified by address arithmetic); rank-to-module binding by MAD_DIMM size; [RANK] log for on-hardware verification.</div>
+
+  <h3>v3.04 — wrong failing chip fixed</h3>
+  <div class="sub">The DDR4 SPD decoder read device width and rank count from the wrong bytes and treated the chip as x16 — the report named a wrong chip. Fixed per JEDEC: a 4 GB x8 module is identified correctly (R0 C6, REPLACE verdict).</div>
+
+  <h3>v3.03 — Test 3/4 hang root cause fixed</h3>
+  <div class="sub">The hang on the first real error was caused by an uninitialized diagnostic-cache spinlock. It is now initialized when the run starts; the full Run-All (20 tests) passes with no hangs.</div>
+
+  <h3>v2.96–v3.02 — diagnostic builds</h3>
+  <div class="sub">A series of temporary builds with extended logging — they localized the hang point (the diagnostic-cache spinlock).</div>
+
+  <h3>v2.87–v2.95 — fix series from an independent audit</h3>
+  <div class="sub">SPD width/ranks source consistency, ApDone/ApList index clamps (SMP &gt; 64 CPUs), aggressor write bounds in CFst, bounded AP drain, USB logging moved out of gErrLock, log formatting fixes, AllocateCopyPool check.</div>
+
+  <h3>v2.85–v2.86 — DIMM temperatures on the test screen</h3>
+  <div class="sub">Per-DIMM temperatures ("Temp: 43C" / "Temp: [N/A]") are shown in a single place — the right panel.</div>
+
+  <h3>v2.83 — SMBus fail-safe for DDR5</h3>
+  <div class="sub">SPD reads work on new Intel PCH 600/700 (DDR5) even when the firmware did not release SPD write protection.</div>
 
   <h3>v2.82 — correct early test termination</h3>
   <div class="sub">Phantom BlockMove errors on run interruption are gone: the verify pass is now skipped on early termination and memory is not freed while workers are alive. Standalone Test 7 runs clean.</div>
@@ -697,7 +745,7 @@
 </div>
 
 <footer>
-  UEFI Kit Lab &middot; v2.82 &middot; сборка дистрибутива / distribution build: <span class="file">Make-Dist.bat</span>
+  UEFI Kit Lab &middot; v3.09 &middot; сборка дистрибутива / distribution build: <span class="file">Make-Dist.bat</span>
 </footer>
 
 </div>
