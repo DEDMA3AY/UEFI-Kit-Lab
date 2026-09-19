@@ -150,7 +150,7 @@
 <div class="wrap">
 
 <header>
-  <h1>UEFI Kit Lab<span class="badge">v3.09 &middot; X64 &middot; UEFI</span></h1>
+  <h1>UEFI Kit Lab<span class="badge">v3.12 &middot; X64 &middot; UEFI</span></h1>
   <span class="lang">RU</span>
   <p>Универсальный диагностический комплекс для UEFI-платформ — работает напрямую из загрузочной флешки, без установки и ОС.</p>  <p class="sub" style="margin-top:10px;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.92)">
     <strong>Анализ памяти:</strong> чтение SPD всех планок (DDR3/DDR4/DDR5) по SMBus
@@ -267,7 +267,7 @@
   <h2>Что умеет программа</h2>
   <span class="lang">RU</span>
 
-  <div class="rev">Текущая ревизия: <strong>v3.09</strong></div>
+  <div class="rev">Текущая ревизия: <strong>v3.12</strong></div>
 
   <ul class="features">
     <li>
@@ -328,6 +328,15 @@
   <h2>Что нового — изменения по версиям</h2>
   <span class="lang">RU</span>
 
+  <h3>v3.12 — дамп SPD DDR5 на Intel и AMD</h3>
+  <div class="sub">Исправлен выбор страницы SPD5-хаба (MR11): на Intel запись идёт через SMBus Process Call (прошивка часто блокирует обычную запись к SPD), на AMD — обычной записью; тип памяти берётся из SMBIOS. Дамп 1024 байта с CRC OK подтверждён на Intel DDR5, AMD AM5 и при регрессе DDR4.</div>
+
+  <h3>v3.11 — ENTER на экране ошибок ведёт к результатам</h3>
+  <div class="sub">Изоляция планок больше не стартует скрыто за подсказкой ENTER: она доступна по клавише I на экране результатов (Test 13 + Test 11 на сбойной планке), а её результаты дописываются в memtest.log. Экран изоляции строится полностью.</div>
+
+  <h3>v3.10 — единая нумерация планок и chip-select</h3>
+  <div class="sub">Строки ошибок, отчёт и вердикты показывают физический слот (как S2/S3 на экране SPD) и chip-select (CS) вместо внутреннего ранга плашки; убран дублирующий индикатор «первый плохой чип».</div>
+
   <h3>v3.09 — двухканальные конфигурации: честная атрибуция ошибок</h3>
   <div class="sub">Каналы привязываются к планкам по размеру из регистров MAD контроллера памяти (IMC), а не по SMBIOS Type 20. Если адрес попадает в зону интерлива и канал невозможно различить однозначно — ошибка учитывается обеим планкам, а не обвиняет неверную. Проба карты адресов (DRAMA) теперь выполняется в каждом прогоне.</div>
 
@@ -381,6 +390,15 @@
 
   <span class="lang">EN</span>
   <h3>English — What's new by version</h3>
+
+  <h3>v3.12 — DDR5 SPD dump on Intel and AMD</h3>
+  <div class="sub">Fixed the SPD5 hub page select (MR11): on Intel the write goes through an SMBus Process Call (firmware often blocks the plain SPD write), on AMD it stays a normal byte write; the memory type is taken from SMBIOS. A 1024-byte dump with CRC OK is confirmed on Intel DDR5, AMD AM5 and the DDR4 regression run.</div>
+
+  <h3>v3.11 — ENTER on the error screen shows results</h3>
+  <div class="sub">DIMM isolation no longer starts hidden behind the ENTER prompt: it is available on the results screen via the I key (Test 13 + Test 11 on the failing stick), and its results are appended to memtest.log. The isolation screen is now drawn completely.</div>
+
+  <h3>v3.10 — unified DIMM numbering and chip-select</h3>
+  <div class="sub">Error lines, the report and the verdicts show the physical slot (same S2/S3 numbering as the SPD screen) and the chip-select (CS) instead of the module-internal rank; the duplicate "first bad chip" indicator was removed.</div>
 
   <h3>v3.09 — dual-channel configurations: honest error attribution</h3>
   <div class="sub">Channels are bound to modules by the size in the memory controller MAD registers, not by SMBIOS Type 20. If an address falls into the interleave zone and the channel cannot be told apart, the error is counted for both modules instead of blaming a wrong one. The DRAMA address-map probe now runs on every pass.</div>
@@ -745,7 +763,7 @@
 </div>
 
 <footer>
-  UEFI Kit Lab &middot; v3.09 &middot; сборка дистрибутива / distribution build: <span class="file">Make-Dist.bat</span>
+  UEFI Kit Lab &middot; v3.12 &middot; сборка дистрибутива / distribution build: <span class="file">Make-Dist.bat</span>
 </footer>
 
 </div>
