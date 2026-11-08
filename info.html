@@ -150,7 +150,7 @@
 <div class="wrap">
 
 <header>
-  <h1>UEFI Kit Lab<span class="badge">v3.12 &middot; X64 &middot; UEFI</span></h1>
+  <h1>UEFI Kit Lab<span class="badge">v3.23 &middot; X64 &middot; UEFI</span></h1>
   <span class="lang">RU</span>
   <p>Универсальный диагностический комплекс для UEFI-платформ — работает напрямую из загрузочной флешки, без установки и ОС.</p>  <p class="sub" style="margin-top:10px;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.92)">
     <strong>Анализ памяти:</strong> чтение SPD всех планок (DDR3/DDR4/DDR5) по SMBus
@@ -267,7 +267,7 @@
   <h2>Что умеет программа</h2>
   <span class="lang">RU</span>
 
-  <div class="rev">Текущая ревизия: <strong>v3.12</strong></div>
+  <div class="rev">Текущая ревизия: <strong>v3.23</strong></div>
 
   <ul class="features">
     <li>
@@ -327,6 +327,24 @@
 <div class="card">
   <h2>Что нового — изменения по версиям</h2>
   <span class="lang">RU</span>
+
+  <h3>v3.23 — устранены самопересечения чанков и guard-ов</h3>
+  <div class="sub">Временный benchmark-буфер (до 64 МБ) больше не оставляет вечный own-guard (OwnGuardSuspend/Resume); BuildChunkList режет чанки по сортированным guard-интервалам — fallback «OwnBogus» test-through убран; запас MaxChunks +1024; снимок Ch-&gt;PhysAddr/Size делается до ядра, после ядра Ch-&gt;Size не читается (direct/BitFade/Soak); невалидный чанк → abort, Done &gt; Total → кламп дисплея. Проверено на H510/G5900: Run All LIGHT — 0 ошибок, Test 2 — 10.8 с.</div>
+
+  <h3>v3.22.1 — диагностика геометрии чанков (diagnostic-only)</h3>
+  <div class="sub">Логи [CHUNKS-PTR], [GUARD], [OWN], [CHUNK-OVERLAP], [CHUNKS-IN-CHUNK], дамп own-guard, принудительный сброс memtest.log на границах теста. Логика тестов не менялась.</div>
+
+  <h3>v3.22 — финальное окно результатов 128x40</h3>
+  <div class="sub">DrawResultsWindow(): на консолях ≥100×30 — окно 96×25 с вердиктом, статусами всех тестов, HEALTH, DIMM, SENSORS и FILES; на широких экранах старый последовательный вывод подавлен. Узкие консоли сохраняют прежний экран.</div>
+
+  <h3>v3.21 — привязка одинаковых планок и реальная частота в boot</h3>
+  <div class="sub">Исправлена привязка двух одинаковых DIMM (сохраняется реальный PhysSlot); boot-сводка показывает фактическую частоту IMC («Speed: 2667 MT/s (SPD 2400)»); BCLK UI берётся из CPUID.16H; широкие строки SPD.</div>
+
+  <h3>v3.16–v3.20 — телеметрия CPU и слоты</h3>
+  <div class="sub">Живые CLK/Vcore/Vid и эффективная частота BSP по APERF/MPERF (Linux-формула), широкая раскладка тестового экрана; SPD identity перечитывается из EEPROM, слоты нумеруются по SMBIOS, у каждой планки — JEDEC/XMP и живая скорость IMC.</div>
+
+  <h3>v3.13–v3.15 — SPD-фиксы, Test 14, DDR4 DDP</h3>
+  <div class="sub">Определение DDR5 по типу памяти + восстановление страницы MR11 и строгий CRC; Test 14 переведён с FAT на raw-раздел 16 МБ (UEFI-KIT-DMA-v1), устранены его SMP-зависания; защита профиля (PP_VERSION=2); DDR4 DDP — честная ёмкость и панель физических корпусов P[0..N-1].</div>
 
   <h3>v3.12 — дамп SPD DDR5 на Intel и AMD</h3>
   <div class="sub">Исправлен выбор страницы SPD5-хаба (MR11): на Intel запись идёт через SMBus Process Call (прошивка часто блокирует обычную запись к SPD), на AMD — обычной записью; тип памяти берётся из SMBIOS. Дамп 1024 байта с CRC OK подтверждён на Intel DDR5, AMD AM5 и при регрессе DDR4.</div>
@@ -390,6 +408,24 @@
 
   <span class="lang">EN</span>
   <h3>English — What's new by version</h3>
+
+  <h3>v3.23 — chunk/self-overlap fixed</h3>
+  <div class="sub">The transient benchmark buffer (up to 64 MB) no longer leaves a permanent own-guard (OwnGuardSuspend/Resume); BuildChunkList splits chunks on sorted guard intervals — the "OwnBogus" test-through fallback is gone; MaxChunks headroom +1024; Ch-&gt;PhysAddr/Size are snapshotted before the kernel and Ch-&gt;Size is never read after it (direct/BitFade/Soak); invalid chunk → abort, Done &gt; Total → display clamp. Verified on H510/G5900: Run All LIGHT — 0 errors, Test 2 — 10.8 s.</div>
+
+  <h3>v3.22.1 — chunk geometry diagnostics (diagnostic-only)</h3>
+  <div class="sub">Log lines [CHUNKS-PTR], [GUARD], [OWN], [CHUNK-OVERLAP], [CHUNKS-IN-CHUNK], own-guard dump, forced memtest.log flush at test boundaries. Test logic unchanged.</div>
+
+  <h3>v3.22 — final results window 128x40</h3>
+  <div class="sub">DrawResultsWindow(): on consoles ≥100×30 a 96×25 window with the verdict, per-test statuses, HEALTH, DIMM, SENSORS and FILES; the old sequential output is suppressed on wide screens. Narrow consoles keep the classic screen.</div>
+
+  <h3>v3.21 — identical-DIMM binding and real boot speed</h3>
+  <div class="sub">Fixed binding of two identical DIMMs (the real PhysSlot is kept); the boot summary shows the actual IMC speed ("Speed: 2667 MT/s (SPD 2400)"); UI BCLK from CPUID.16H; wider SPD rows.</div>
+
+  <h3>v3.16–v3.20 — CPU telemetry and slots</h3>
+  <div class="sub">Live CLK/Vcore/Vid and the effective BSP frequency via APERF/MPERF (Linux formula), wide test-screen layout; SPD identity re-read from the EEPROM, slots numbered by SMBIOS, per-module JEDEC/XMP and live IMC speed.</div>
+
+  <h3>v3.13–v3.15 — SPD fixes, Test 14, DDR4 DDP</h3>
+  <div class="sub">DDR5 detection by the memory type + MR11 page restore and strict CRC; Test 14 moved from FAT to a 16 MB raw partition (UEFI-KIT-DMA-v1) with its SMP hangs fixed; profile protection (PP_VERSION=2); DDR4 DDP — honest capacity and a physical-package panel P[0..N-1].</div>
 
   <h3>v3.12 — DDR5 SPD dump on Intel and AMD</h3>
   <div class="sub">Fixed the SPD5 hub page select (MR11): on Intel the write goes through an SMBus Process Call (firmware often blocks the plain SPD write), on AMD it stays a normal byte write; the memory type is taken from SMBIOS. A 1024-byte dump with CRC OK is confirmed on Intel DDR5, AMD AM5 and the DDR4 regression run.</div>
@@ -763,7 +799,7 @@
 </div>
 
 <footer>
-  UEFI Kit Lab &middot; v3.12 &middot; сборка дистрибутива / distribution build: <span class="file">Make-Dist.bat</span>
+  UEFI Kit Lab &middot; v3.23 &middot; сборка дистрибутива / distribution build: <span class="file">Make-Dist.bat</span>
 </footer>
 
 </div>

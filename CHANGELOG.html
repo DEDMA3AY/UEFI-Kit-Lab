@@ -17,6 +17,78 @@ header p{margin:0;opacity:.92;font-size:14.5px}
 <header><h1>UEFI Kit Lab — CHANGELOG</h1>
 <p>История версий: основные изменения, начиная с v2.52. / Version history: key changes, from v2.52 on. RU and EN per entry.</p></header>
 <div class="v">
+  <span class="date">2026-11-05</span>
+  <span class="tag">v3.23</span>
+  <div class="ru">разрезка чанков по guard-интервалам (обход test-through удалён), временный benchmark-guard без регистрации, снимок чанка до ядра</div>
+  <div class="en">Chunk/self-overlap fixed: the transient 64-MB bench buffer no longer leaves a permanent guard, guards split chunks by sorted intervals (test-through fallback removed), chunk fields snapshotted before kernels</div>
+</div>
+<div class="v">
+  <span class="date">2026-11-05</span>
+  <span class="tag">v3.22.1</span>
+  <div class="ru">диагностическая сборка: геометрия чанков/own-guard, сброс лога на границах теста</div>
+  <div class="en">Diagnostic-only: chunk/own-guard geometry dumps + log flush at test boundaries</div>
+</div>
+<div class="v">
+  <span class="date">2026-11-04</span>
+  <span class="tag">v3.22</span>
+  <div class="ru">финальные результаты: окно 96x25 на широких консолях (128x40)</div>
+  <div class="en">Final results: a 96x25 window on wide consoles (128x40)</div>
+</div>
+<div class="v">
+  <span class="date">2026-10-23</span>
+  <span class="tag">v3.21</span>
+  <div class="ru">H510: привязка одинаковых планок, реальная частота в boot, широкие SPD-строки</div>
+  <div class="en">H510: identical-DIMM binding, real frequency in boot, wide SPD rows</div>
+</div>
+<div class="v">
+  <span class="date">2026-10-13</span>
+  <span class="tag">v3.20</span>
+  <div class="ru">идентичность планки из одного источника, live-скорость у каждой планки, слоты по SMBIOS</div>
+  <div class="en">Module identity from a single source, live speed per module, slots by SMBIOS</div>
+</div>
+<div class="v">
+  <span class="date">2026-10-12</span>
+  <span class="tag">v3.19</span>
+  <div class="ru">живая частота Sandy..Broadwell (APERF/MPERF), fix W# мёртвого max-гейта, Vid, ESC-байл</div>
+  <div class="en">Live frequency Sandy..Broadwell (APERF/MPERF), dead max-gate fix W#, Vid, ESC bail</div>
+</div>
+<div class="v">
+  <span class="date">2026-10-12</span>
+  <span class="tag">v3.18</span>
+  <div class="ru">широкая раскладка тестового экрана + Vcore в строке CLK/Temp</div>
+  <div class="en">Wide test-screen layout + Vcore in the CLK/Temp row</div>
+</div>
+<div class="v">
+  <span class="date">2026-10-12</span>
+  <span class="tag">v3.17</span>
+  <div class="ru">CPU-телеметрия: надёжная шина CLK + реальный Vcore (Intel)</div>
+  <div class="en">CPU telemetry: reliable bus CLK + real Vcore (Intel)</div>
+</div>
+<div class="v">
+  <span class="date">2026-10-10</span>
+  <span class="tag">v3.16</span>
+  <div class="ru">фикс CLK/Temp: живой множитель читался не из того поля MSR 0x198</div>
+  <div class="en">CLK/Temp fix: the live multiplier was read from the wrong MSR 0x198 field</div>
+</div>
+<div class="v">
+  <span class="date">2026-10-10</span>
+  <span class="tag">v3.15</span>
+  <div class="ru">DDR4 DDP: ёмкость без двойного учёта die count + панель физических корпусов</div>
+  <div class="en">DDR4 DDP: capacity without double-counting the die count + physical-package panel</div>
+</div>
+<div class="v">
+  <span class="date">2026-10-04</span>
+  <span class="tag">v3.14</span>
+  <div class="ru">Test 14: корни SMP-зависаний; целостность профиля; DDR5 SPD page; DMA-раздел</div>
+  <div class="en">Test 14: SMP hang roots; profile integrity; DDR5 SPD page; DMA partition</div>
+</div>
+<div class="v">
+  <span class="date">2026-10-03</span>
+  <span class="tag">v3.13</span>
+  <div class="ru">Перенос SPD-фиксов из параллельной MRC-ветки</div>
+  <div class="en">SPD fixes ported from the parallel MRC track</div>
+</div>
+<div class="v">
   <span class="date">2026-09-18</span>
   <span class="tag">v3.12</span>
   <div class="ru">DDR5 SPD-дамп: выбор страницы SPD5 (MR11) через Process Call на Intel</div>
