@@ -150,7 +150,7 @@
 <div class="wrap">
 
 <header>
-  <h1>UEFI Kit Lab<span class="badge">v3.23 &middot; X64 &middot; UEFI</span></h1>
+  <h1>UEFI Kit Lab<span class="badge">v3.23.2 &middot; X64 &middot; UEFI</span></h1>
   <span class="lang">RU</span>
   <p>Универсальный диагностический комплекс для UEFI-платформ — работает напрямую из загрузочной флешки, без установки и ОС.</p>  <p class="sub" style="margin-top:10px;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.92)">
     <strong>Анализ памяти:</strong> чтение SPD всех планок (DDR3/DDR4/DDR5) по SMBus
@@ -267,7 +267,7 @@
   <h2>Что умеет программа</h2>
   <span class="lang">RU</span>
 
-  <div class="rev">Текущая ревизия: <strong>v3.23</strong></div>
+  <div class="rev">Текущая ревизия: <strong>v3.23.2</strong></div>
 
   <ul class="features">
     <li>
@@ -327,6 +327,12 @@
 <div class="card">
   <h2>Что нового — изменения по версиям</h2>
   <span class="lang">RU</span>
+
+  <h3>v3.23.2 — исправлено наложение тегов в строке ошибки</h3>
+  <div class="sub">Теги [Slot]/[CS]/[Chip] печатались в фиксированные колонки и на 128-колоночном экране перекрывали hex-значения exp/got. Теперь строка ошибки собирается целиком, теги дописываются после текста; что не помещается — пропускается.</div>
+
+  <h3>v3.23.1 — исправлен каскад ложных ошибок в Test 4</h3>
+  <div class="sub">В splat-раундах Test 4 состояние PRSG постоянно; после ремонта реально сбойного блока оно ошибочно сдвигалось, и остаток 64-МБ чанка помечался фантомными ошибками (до 14 млн на неисправном модуле). SUSPECT-чип теперь считается по полным счётчикам прогона, diff в нескольких байтовых дорожках относится к bus/region-level, а не к «чипу 0».</div>
 
   <h3>v3.23 — устранены самопересечения чанков и guard-ов</h3>
   <div class="sub">Временный benchmark-буфер (до 64 МБ) больше не оставляет вечный own-guard (OwnGuardSuspend/Resume); BuildChunkList режет чанки по сортированным guard-интервалам — fallback «OwnBogus» test-through убран; запас MaxChunks +1024; снимок Ch-&gt;PhysAddr/Size делается до ядра, после ядра Ch-&gt;Size не читается (direct/BitFade/Soak); невалидный чанк → abort, Done &gt; Total → кламп дисплея. Проверено на H510/G5900: Run All LIGHT — 0 ошибок, Test 2 — 10.8 с.</div>
@@ -408,6 +414,12 @@
 
   <span class="lang">EN</span>
   <h3>English — What's new by version</h3>
+
+  <h3>v3.23.2 — error-line tag overlap fixed</h3>
+  <div class="sub">The [Slot]/[CS]/[Chip] tags were printed at fixed columns and on a 128-col console overwrote the exp/got hex values. The error line is now built as a whole, the tags are appended after the text, and anything that does not fit is skipped.</div>
+
+  <h3>v3.23.1 — Test 4 phantom-error cascade fixed</h3>
+  <div class="sub">In the splat rounds of Test 4 the PRSG state is constant; after repairing a genuinely failing block it was advanced by mistake, so the rest of the 64-MB chunk was flagged with phantom errors (up to 14M on a dying module). The suspect chip now comes from full-run counters, and multi-lane diffs are reported as bus/region-level instead of "chip 0".</div>
 
   <h3>v3.23 — chunk/self-overlap fixed</h3>
   <div class="sub">The transient benchmark buffer (up to 64 MB) no longer leaves a permanent own-guard (OwnGuardSuspend/Resume); BuildChunkList splits chunks on sorted guard intervals — the "OwnBogus" test-through fallback is gone; MaxChunks headroom +1024; Ch-&gt;PhysAddr/Size are snapshotted before the kernel and Ch-&gt;Size is never read after it (direct/BitFade/Soak); invalid chunk → abort, Done &gt; Total → display clamp. Verified on H510/G5900: Run All LIGHT — 0 errors, Test 2 — 10.8 s.</div>
@@ -799,7 +811,7 @@
 </div>
 
 <footer>
-  UEFI Kit Lab &middot; v3.23 &middot; сборка дистрибутива / distribution build: <span class="file">Make-Dist.bat</span>
+  UEFI Kit Lab &middot; v3.23.2 &middot; сборка дистрибутива / distribution build: <span class="file">Make-Dist.bat</span>
 </footer>
 
 </div>

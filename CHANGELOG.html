@@ -17,6 +17,18 @@ header p{margin:0;opacity:.92;font-size:14.5px}
 <header><h1>UEFI Kit Lab — CHANGELOG</h1>
 <p>История версий: основные изменения, начиная с v2.52. / Version history: key changes, from v2.52 on. RU and EN per entry.</p></header>
 <div class="v">
+  <span class="date">2026-11-08</span>
+  <span class="tag">v3.23.2</span>
+  <div class="ru">fix UI: теги [Slot]/[CS]/[Chip] больше не затирают hex-значения в строке ошибки</div>
+  <div class="en">UI fix: the [Slot]/[CS]/[Chip] tags no longer overwrite the hex values in the error line (appended after the text, skipped if they do not fit)</div>
+</div>
+<div class="v">
+  <span class="date">2026-11-08</span>
+  <span class="tag">v3.23.1</span>
+  <div class="ru">fix W6: каскад фантомных ошибок в Test 4; fix W7: SUSPECT по полным счётчикам; fix W8: межбайтовый diff без чипа</div>
+  <div class="en">fix W6: Test 4 PRSG cascade (14M phantom errors on a dying module), W7: suspect chip from full-run counters, W8: multi-lane diffs reported as bus/region-level</div>
+</div>
+<div class="v">
   <span class="date">2026-11-05</span>
   <span class="tag">v3.23</span>
   <div class="ru">разрезка чанков по guard-интервалам (обход test-through удалён), временный benchmark-guard без регистрации, снимок чанка до ядра</div>
